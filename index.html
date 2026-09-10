@@ -259,6 +259,19 @@ footer .fr{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;al
 footer a{color:var(--text-2);text-decoration:none}
 footer a:hover{color:var(--cyan)}
 
+/* ---------- 流量统计 ---------- */
+.foot-stat{display:flex;align-items:center;gap:8px 18px;flex-wrap:wrap;
+  padding-top:18px;margin-top:18px;border-top:1px dashed var(--line)}
+.foot-stat .fs{display:inline-flex;align-items:center;gap:6px}
+.foot-stat b{color:var(--cyan);font-variant-numeric:tabular-nums;font-weight:600}
+.foot-stat .pulse{width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 0 0 rgba(34,211,238,.6);animation:pls 2.4s infinite}
+@keyframes pls{
+  0%{box-shadow:0 0 0 0 rgba(34,211,238,.55)}
+  70%{box-shadow:0 0 0 7px rgba(34,211,238,0)}
+  100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}
+}
+
 /* 返回顶部 */
 #top{position:fixed;right:22px;bottom:22px;z-index:70;width:42px;height:42px;border-radius:12px;
   border:1px solid var(--line-2);background:rgba(8,13,26,.9);color:var(--cyan);cursor:pointer;
@@ -375,6 +388,13 @@ footer a:hover{color:var(--cyan)}
   <div class="wrap fr">
     <div>OPC 情报站 · 数据更新 <span id="f-updated">—</span> · 静态站点由 GitHub Pages 托管</div>
     <div>参考 <a href="https://github.com/WXzhongwang/bigdata-knowledge-hub" target="_blank" rel="noopener">bigdata-knowledge-hub</a> 架构 · 零外部依赖</div>
+  </div>
+  <div class="wrap foot-stat" id="foot-stat">
+    <span class="fs"><i class="pulse"></i>流量统计</span>
+    <span class="fs">总访问 <b id="busuanzi_value_site_pv">—</b> 次</span>
+    <span class="fs">独立访客 <b id="busuanzi_value_site_uv">—</b> 人</span>
+    <span class="fs">本页浏览 <b id="busuanzi_value_page_pv">—</b> 次</span>
+    <span class="fs" id="foot-stat-more"></span>
   </div>
 </footer>
 
@@ -858,6 +878,85 @@ boot();
       boot();
     })
     .catch(function(){});
+})();
+</script>
+
+<script>
+/* ==================== 流量统计接入层 ====================
+   设计原则
+   1) 全部异步注入，绝不阻塞页面渲染；
+   2) 任一 provider 加载失败均静默降级，不影响站点任何功能；
+   3) 默认开启零注册的「不蒜子」（页脚展示 PV / UV），
+      其余服务把 enabled 改为 true 并填入自己的 ID 即启用。
+
+   快速启用示例（改这一处即可，无需动其它代码）：
+     ANALYTICS.clarity    = { enabled:true, id:"你的10位ID" };        // 热图 + 会话录制
+     ANALYTICS.ga4        = { enabled:true, id:"G-XXXXXXXXXX" };      // 流量 / 来源 / 转化
+     ANALYTICS.cloudflare = { enabled:true, token:"beacon token" };   // 无 cookie 流量统计
+======================================================== */
+window.ANALYTICS = {
+  busuanzi:    { enabled: true },                                     /* 零注册：站点 PV / UV / 本页 PV */
+  clarity:     { enabled: false, id: "" },                            /* Microsoft Clarity 免费无上限 */
+  ga4:         { enabled: false, id: "" },                            /* Google Analytics 4 */
+  umami:       { enabled: false, id: "", src: "https://cloud.umami.is/script.js" },
+  cloudflare:  { enabled: false, token: "" },                         /* Cloudflare Web Analytics */
+  goatcounter: { enabled: false, code: "" }                           /* GoatCounter */
+};
+
+(function(){
+  var A = window.ANALYTICS || {}, head = document.head;
+
+  function inject(src, attrs){
+    try{
+      var s = document.createElement("script");
+      s.async = true; s.defer = true; s.src = src;
+      if(attrs){ for(var k in attrs){ s.setAttribute(k, attrs[k]); } }
+      s.onerror = function(){};                 /* 静默失败 */
+      head.appendChild(s);
+    }catch(e){}
+  }
+
+  /* 1. 不蒜子 —— 零注册，页脚直接显示访问量 */
+  if(A.busuanzi && A.busuanzi.enabled){
+    inject("https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+  }
+
+  /* 2. Microsoft Clarity —— 免费无流量上限，热图 + 会话录制 + 点击分析 */
+  if(A.clarity && A.clarity.enabled && A.clarity.id){
+    (function(c,l,a,r,i,t,y){
+      c[a] = c[a] || function(){ (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", A.clarity.id);
+  }
+
+  /* 3. Google Analytics 4 */
+  if(A.ga4 && A.ga4.enabled && A.ga4.id){
+    inject("https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(A.ga4.id));
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", A.ga4.id, { anonymize_ip: true });
+  }
+
+  /* 4. Umami —— 隐私友好，云版 / 自托管均可 */
+  if(A.umami && A.umami.enabled && A.umami.id){
+    inject(A.umami.src || "https://cloud.umami.is/script.js",
+           { "data-website-id": A.umami.id });
+  }
+
+  /* 5. Cloudflare Web Analytics —— 无 cookie，免费无上限 */
+  if(A.cloudflare && A.cloudflare.enabled && A.cloudflare.token){
+    inject("https://static.cloudflareinsights.com/beacon.min.js",
+           { "data-cf-beacon": JSON.stringify({ token: A.cloudflare.token }) });
+  }
+
+  /* 6. GoatCounter —— 极轻量，免费托管（非商业） */
+  if(A.goatcounter && A.goatcounter.enabled && A.goatcounter.code){
+    var gc = A.goatcounter.code;
+    inject("https://gc.zgo.at/count.js",
+           { "data-goatcounter": /^https?:/.test(gc) ? gc : "https://" + gc + ".goatcounter.com/count" });
+  }
 })();
 </script>
 </body>

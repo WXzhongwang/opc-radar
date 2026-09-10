@@ -97,6 +97,47 @@ python -m http.server 8000
 # 打开 http://localhost:8000
 ```
 
+## 流量统计
+
+站点内置**可插拔的统计接入层**（见 `index.html` 底部的 `window.ANALYTICS`）。所有脚本异步注入，任一服务加载失败都会静默降级，不影响页面任何功能。
+
+### 默认开启：不蒜子（零注册）
+
+页脚实时显示「总访问 / 独立访客 / 本页浏览」，无需注册任何账号，部署完即有数据。
+
+### 可接入的服务
+
+| 服务 | 免费额度 | 能力 | 需注册 | 配置字段 |
+| --- | --- | --- | --- | --- |
+| 不蒜子 Busuanzi | 免费无上限 | PV / UV 计数 | 否（默认开启） | `busuanzi.enabled` |
+| Microsoft Clarity | **免费无上限** | 热图、会话录制、点击分析 | 是 | `clarity.id` |
+| Cloudflare Web Analytics | **免费无上限** | 流量 / 来源 / 地区，无 cookie | 是 | `cloudflare.token` |
+| Umami Cloud | 免费层 3 站点 / 10 万事件每月 | 隐私友好、轻量看板 | 是 | `umami.id` |
+| GoatCounter | 免费托管（非商业） | 极轻量 PV 与来源 | 是 | `goatcounter.code` |
+| Google Analytics 4 | 免费 | 全量流量分析与转化 | 是 | `ga4.id` |
+
+### 启用方式
+
+只改 `index.html` 底部这一处，无需改动其它代码：
+
+```js
+window.ANALYTICS.clarity    = { enabled: true, id: "你的项目 ID" };
+window.ANALYTICS.cloudflare = { enabled: true, token: "你的 beacon token" };
+window.ANALYTICS.ga4        = { enabled: true, id: "G-XXXXXXXXXX" };
+```
+
+推荐组合：**不蒜子（页脚即时可见）+ Microsoft Clarity（免费的会话录制与热图，无流量上限）**。
+
+### 关闭统计
+
+```js
+window.ANALYTICS.busuanzi.enabled = false;
+```
+
+### 隐私说明
+
+统计脚本由访客浏览器直接向对应服务商发起请求，本站无中间服务器、不采集任何表单数据。若面向欧盟用户或有合规要求，建议只启用无 cookie 的方案（不蒜子 / Cloudflare / Umami / GoatCounter）并相应调整隐私声明。
+
 ## 部署
 
 当前使用 **Deploy from a branch**：Pages 源为 `main` 分支的 `/` 根目录，推送即发布，无需构建步骤（纯静态、无外部依赖，Jekyll 不会改动任何文件）。
