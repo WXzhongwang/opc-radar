@@ -221,6 +221,21 @@ select{background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--te
 .rk .bv{width:56px;height:4px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;flex:none}
 .rk .bf{height:100%;background:linear-gradient(90deg,var(--amber),var(--rose))}
 
+/* 月度时间轴（HTML 柱状图：文字不随容器拉伸变形，月份多时横向滚动） */
+.trend{display:flex;overflow-x:auto;padding:6px 2px 0;-webkit-overflow-scrolling:touch}
+.trend::-webkit-scrollbar{height:6px}
+.trend::-webkit-scrollbar-thumb{background:rgba(96,165,250,.24);border-radius:4px}
+.tcol{flex:1 0 46px;max-width:92px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;padding:0 5px}
+.tcol .tv{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--cyan)}
+.tcol .ttrack{width:100%;height:132px;display:flex;align-items:flex-end;justify-content:center;
+  border-bottom:1px solid rgba(96,165,250,.22)}
+.tcol .tbar{width:62%;max-width:26px;min-width:10px;min-height:3px;border-radius:4px 4px 1px 1px;
+  background:linear-gradient(180deg,#22d3ee,rgba(139,92,246,.35));transition:filter .18s}
+.tcol .tlbl{font-family:var(--mono);font-size:10.5px;color:var(--text-2);white-space:nowrap;
+  letter-spacing:.3px;padding-top:1px}
+.tcol:hover .tbar{filter:brightness(1.4)}
+.tcol:hover .tv{color:#fff}
+
 /* ---------- 详情抽屉 ---------- */
 .mask{position:fixed;inset:0;z-index:90;background:rgba(2,4,10,.72);backdrop-filter:blur(6px);
   opacity:0;pointer-events:none;transition:.28s}
@@ -360,7 +375,7 @@ footer a:hover{color:var(--cyan)}
   .timeline{padding-left:20px}
   .tl-item{gap:8px;padding:9px 10px;flex-wrap:wrap}
   .tl-item .d{width:100%;padding-top:0;font-size:10.5px}
-  .tl-item .t{font-size:13px;flex:1 1 100%;min-width:0}
+  .tl-item .t{font-size:13px;flex:1;min-width:0}
   .tl-item .g{margin-top:0}
   .tl-month::before{width:13px;height:13px}
 
@@ -372,7 +387,9 @@ footer a:hover{color:var(--cyan)}
   .donut-wrap{gap:14px;justify-content:center;min-width:0}
   #donut svg{width:142px;height:142px}
   .legend{flex:1 0 100%;min-width:0;gap:7px}
-  #trend svg{height:150px!important}
+  #trend .ttrack{height:100px}
+  #trend .tcol{flex-basis:42px}
+  #trend .tlbl{font-size:10px}
   .rank .tx{font-size:12.4px}
   .rk .bv{width:38px}
 
@@ -896,36 +913,27 @@ function renderStats(){
   }).join("");
   bindCards();
 
-  /* 时间轴（按月柱状） */
+  /* 时间轴（按月柱状，HTML 实现：文字不随容器拉伸变形，月份多时横向滚动） */
   var bym = {};
   DATA.items.forEach(function(i){
     var m = String(i.date||"").slice(0,7);
     if(m) bym[m] = (bym[m]||0)+1;
   });
   var ms = Object.keys(bym).sort();
-  var maxv = Math.max.apply(null, ms.map(function(m){ return bym[m]; }));
-  var W = 100, gap = ms.length>1 ? 100/(ms.length*1.7) : 20;
-  var bw = Math.max(2.4, 100/ms.length - gap*0.5);
-  var maxH = 132;
-  var bars = ms.map(function(m,k){
-    var h = Math.max(4, bym[m]/maxv*maxH);
-    var x = k*(100/ms.length) + (100/ms.length - bw)/2;
-    return '<rect x="'+x+'" y="'+(maxH-h)+'" width="'+bw+'" height="'+h+'" rx="1.4" fill="url(#gbar)">'+
-      '<title>'+m+'：'+bym[m]+' 条</title></rect>';
-  }).join("");
-  var labels = ms.map(function(m,k){
-    if(ms.length > 12 && k % 2) return "";
-    var x = k*(100/ms.length) + (100/ms.length)/2;
-    return '<text x="'+x+'" y="'+(maxH+15)+'" text-anchor="middle" fill="#7d8fab" font-size="6.2" font-family="JetBrains Mono,monospace">'+m.slice(2)+'</text>';
-  }).join("");
-  $("#trend").innerHTML =
-    '<svg viewBox="0 0 100 '+(maxH+24)+'" preserveAspectRatio="none" style="width:100%;height:180px">'+
-      '<defs><linearGradient id="gbar" x1="0" y1="0" x2="0" y2="1">'+
-        '<stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity=".35"/>'+
-      '</linearGradient></defs>'+
-      '<line x1="0" y1="'+maxH+'" x2="100" y2="'+maxH+'" stroke="rgba(96,165,250,.2)" stroke-width="0.25"/>'+
-      bars + labels +
-    '</svg>';
+  if(!ms.length){
+    $("#trend").innerHTML = '<div class="empty"><div class="big">◈</div>暂无月度数据</div>';
+  } else {
+    var maxv = Math.max.apply(null, ms.map(function(m){ return bym[m]; }));
+    $("#trend").innerHTML = '<div class="trend">'+ms.map(function(m){
+      var h = Math.round(bym[m]/maxv*100);
+      var y = m.slice(0,4), mm = m.slice(5,7);
+      return '<div class="tcol" title="'+esc(y)+' 年 '+esc(mm)+' 月：'+bym[m]+' 条">'+
+        '<span class="tv">'+bym[m]+'</span>'+
+        '<span class="ttrack"><span class="tbar" style="height:'+h+'%"></span></span>'+
+        '<span class="tlbl">'+esc(mm)+'<span class="ty" style="opacity:.55;font-size:9px">/'+esc(y.slice(2))+'</span></span>'+
+      '</div>';
+    }).join("")+'</div>';
+  }
 }
 
 /* ---------- 事件 ---------- */
