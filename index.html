@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPC 情报站 · 一人公司全平台热门资讯雷达</title>
+<meta name="description" content="OPC（One Person Company，一人公司）AI 时代轻量化创业范式全平台情报聚合：政策动向、社区落地、创业案例、生态工具、研究报告、赛事活动、风险观察、全球视野。">
+<style>
+:root{
+  --bg:#04060d;
+  --bg-2:#070b16;
+  --panel:rgba(12,18,33,.72);
+  --panel-solid:#0b1120;
+  --panel-2:rgba(18,26,46,.6);
+  --line:rgba(96,165,250,.14);
+  --line-2:rgba(96,165,250,.28);
+  --cyan:#22d3ee;
+  --violet:#a78bfa;
+  --blue:#60a5fa;
+  --green:#34d399;
+  --amber:#fbbf24;
+  --rose:#fb7185;
+  --orange:#fb923c;
+  --teal:#2dd4bf;
+  --indigo:#818cf8;
+  --text:#e8eefb;
+  --text-2:#b6c4dd;
+  --muted:#7d8fab;
+  --radius:16px;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:rgba(34,211,238,.3);color:#fff}
+
+/* ---------- 背景层 ---------- */
+#bg-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.55}
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 12% -6%,rgba(34,211,238,.14),transparent 62%),
+    radial-gradient(760px 480px at 88% 4%,rgba(139,92,246,.14),transparent 62%),
+    radial-gradient(900px 600px at 50% 108%,rgba(59,130,246,.10),transparent 66%);
+}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(96,165,250,.055) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(96,165,250,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 90% 62% at 50% 34%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 62% at 50% 34%,#000 30%,transparent 100%);
+}
+.bg-scan{position:fixed;left:0;right:0;height:220px;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(34,211,238,.045),transparent);
+  animation:scan 14s linear infinite}
+@keyframes scan{0%{top:-240px}100%{top:100%}}
+
+.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 22px}
+
+/* ---------- 顶部导航 ---------- */
+header{position:sticky;top:0;z-index:60;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:linear-gradient(180deg,rgba(4,6,13,.94),rgba(4,6,13,.66));
+  border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.4px;font-size:16px}
+.logo{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));
+  box-shadow:0 0 22px rgba(34,211,238,.42);font-family:var(--mono);font-size:13px;color:#04060d;font-weight:900}
+.brand small{display:block;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:2.2px;font-family:var(--mono)}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{color:var(--text-2);text-decoration:none;font-size:13px;padding:7px 12px;border-radius:9px;transition:.2s}
+.nav-links a:hover{color:var(--cyan);background:rgba(34,211,238,.09)}
+.live{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--muted);
+  padding:6px 11px;border:1px solid var(--line);border-radius:20px;white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 9px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.32}}
+
+/* ---------- HERO ---------- */
+.hero{padding:78px 0 44px;position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:2.6px;color:var(--cyan);border:1px solid rgba(34,211,238,.3);
+  background:rgba(34,211,238,.06);padding:7px 15px;border-radius:24px;margin-bottom:24px}
+h1{font-size:clamp(34px,6.4vw,66px);line-height:1.08;font-weight:900;letter-spacing:-1.4px;margin-bottom:20px}
+.grad{background:linear-gradient(100deg,#22d3ee 0%,#60a5fa 34%,#a78bfa 68%,#f0abfc 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  background-size:220% auto;animation:shift 7s ease-in-out infinite}
+@keyframes shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.lede{max-width:730px;color:var(--text-2);font-size:15.5px;margin-bottom:34px}
+.lede b{color:var(--cyan);font-weight:600}
+.lede code{font-family:var(--mono);font-size:13px;color:var(--violet);background:rgba(167,139,250,.1);
+  padding:2px 6px;border-radius:5px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:13px;margin-bottom:14px}
+.kpi{position:relative;overflow:hidden;padding:19px 18px;border-radius:var(--radius);
+  border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px)}
+.kpi::after{content:"";position:absolute;top:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--cyan),transparent)}
+.kpi:nth-child(2)::after{background:linear-gradient(90deg,var(--violet),transparent)}
+.kpi:nth-child(3)::after{background:linear-gradient(90deg,var(--green),transparent)}
+.kpi:nth-child(4)::after{background:linear-gradient(90deg,var(--amber),transparent)}
+.kpi:nth-child(5)::after{background:linear-gradient(90deg,var(--rose),transparent)}
+.kpi .num{font-family:var(--mono);font-size:32px;font-weight:800;line-height:1.1;
+  background:linear-gradient(180deg,#fff,#8ea0bd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi .lbl{font-size:11.5px;color:var(--muted);letter-spacing:1.4px;margin-top:5px;font-family:var(--mono)}
+
+/* ---------- 控制台 ---------- */
+.console{position:sticky;top:62px;z-index:50;padding:16px 0 14px;margin-bottom:8px;
+  background:linear-gradient(180deg,rgba(4,6,13,.96),rgba(4,6,13,.82));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.console-row{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.search{flex:1;min-width:230px;position:relative}
+.search input{width:100%;background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--text);
+  padding:11px 14px 11px 40px;border-radius:11px;font-size:14px;font-family:var(--sans);outline:none;transition:.2s}
+.search input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+.search input::placeholder{color:var(--muted)}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.55}
+.seg{display:flex;background:rgba(10,16,30,.86);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+.seg button{background:none;border:0;color:var(--muted);font-size:12.5px;padding:7px 13px;border-radius:8px;
+  cursor:pointer;font-family:var(--sans);transition:.18s;white-space:nowrap}
+.seg button.on{background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(167,139,250,.2));color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(34,211,238,.34)}
+select{background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--text-2);font-size:12.5px;
+  padding:10px 12px;border-radius:11px;outline:none;cursor:pointer;font-family:var(--sans)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:rgba(10,16,30,.7);color:var(--text-2);font-size:12.5px;
+  padding:6px 13px;border-radius:20px;cursor:pointer;transition:.18s;font-family:var(--sans);
+  display:inline-flex;align-items:center;gap:6px}
+.chip:hover{border-color:var(--line-2);color:#fff}
+.chip .c{font-family:var(--mono);font-size:10.5px;opacity:.62}
+.chip.on{color:#04060d;font-weight:700;border-color:transparent}
+.chip .kd{width:7px;height:7px;border-radius:50%;flex:none}
+
+/* ---------- 主区 ---------- */
+.main{padding:26px 0 60px}
+.bar{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.bar h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.bar h2::before{content:"";width:3px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--cyan),var(--violet))}
+.bar .meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.bar .meta b{color:var(--cyan)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:15px}
+.card{position:relative;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+  backdrop-filter:blur(12px);padding:19px 19px 16px;cursor:pointer;transition:.26s cubic-bezier(.2,.8,.3,1);
+  overflow:hidden;opacity:0;transform:translateY(16px)}
+.card.in{opacity:1;transform:none}
+.card::before{content:"";position:absolute;inset:0;border-radius:var(--radius);opacity:0;transition:.26s;
+  background:radial-gradient(520px 200px at var(--mx,50%) var(--my,0%),rgba(34,211,238,.1),transparent 62%)}
+.card:hover{border-color:var(--line-2);transform:translateY(-4px);
+  box-shadow:0 18px 46px -18px rgba(34,211,238,.34),0 0 0 1px rgba(34,211,238,.1)}
+.card:hover::before{opacity:1}
+.card-top{display:flex;align-items:center;gap:9px;margin-bottom:11px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:700;padding:3.5px 10px;border-radius:7px;letter-spacing:.5px;font-family:var(--sans)}
+.card-date{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:auto}
+.card h3{font-size:15.5px;line-height:1.5;font-weight:700;margin-bottom:9px;color:#f2f6ff}
+.card .sum{font-size:13.2px;color:var(--text-2);line-height:1.66;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-bot{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.src{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.heat{display:flex;align-items:center;gap:6px;flex:none}
+.heat .hbar{width:44px;height:4px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.heat .hfill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.heat .hv{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+
+/* 时间线 */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;
+  background:linear-gradient(180deg,transparent,var(--line-2) 8%,var(--line-2) 92%,transparent)}
+.tl-group{margin-bottom:26px}
+.tl-month{font-family:var(--mono);font-size:12.5px;color:var(--cyan);letter-spacing:1.6px;margin-bottom:11px;
+  display:flex;align-items:center;gap:9px}
+.tl-month::before{content:"";position:absolute;left:0;width:15px;height:15px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.6)}
+.tl-item{display:flex;gap:12px;align-items:flex-start;padding:9px 13px;border-radius:11px;cursor:pointer;
+  border:1px solid transparent;transition:.2s}
+.tl-item:hover{background:rgba(34,211,238,.055);border-color:var(--line)}
+.tl-item .d{font-family:var(--mono);font-size:11px;color:var(--muted);flex:none;width:82px;padding-top:3px}
+.tl-item .t{font-size:13.6px;color:var(--text);line-height:1.55}
+.tl-item .g{font-size:10.5px;padding:2px 8px;border-radius:6px;flex:none;margin-top:2px}
+
+/* 空态 */
+.empty{text-align:center;padding:70px 20px;color:var(--muted)}
+.empty .big{font-family:var(--mono);font-size:42px;opacity:.28;margin-bottom:12px}
+
+/* ---------- 统计区 ---------- */
+.stats{margin-top:54px;padding-top:38px;border-top:1px solid var(--line)}
+.stats-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px}
+.panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+  backdrop-filter:blur(12px);padding:22px}
+.panel h3{font-size:14.5px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:9px}
+.panel h3::before{content:"";width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,var(--violet),var(--cyan))}
+.panel h3 span{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400;margin-left:auto}
+.donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.legend{flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px}
+.lg{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--text-2);cursor:pointer;transition:.18s}
+.lg:hover{color:#fff}
+.lg .sw{width:9px;height:9px;border-radius:3px;flex:none}
+.lg .n{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:auto}
+.rank{display:flex;flex-direction:column;gap:9px}
+.rk{display:flex;align-items:center;gap:11px;font-size:12.8px;cursor:pointer;padding:4px 0;transition:.18s}
+.rk:hover{color:var(--cyan)}
+.rk .i{font-family:var(--mono);font-size:11px;width:22px;flex:none;color:var(--muted)}
+.rk .i.top{color:var(--amber);font-weight:800}
+.rk .tx{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2)}
+.rk:hover .tx{color:#fff}
+.rk .bv{width:56px;height:4px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;flex:none}
+.rk .bf{height:100%;background:linear-gradient(90deg,var(--amber),var(--rose))}
+
+/* ---------- 详情抽屉 ---------- */
+.mask{position:fixed;inset:0;z-index:90;background:rgba(2,4,10,.72);backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:.28s}
+.mask.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(620px,100%);z-index:100;
+  background:linear-gradient(180deg,#080d1a,#060a14);border-left:1px solid var(--line-2);
+  transform:translateX(102%);transition:.36s cubic-bezier(.2,.8,.3,1);
+  display:flex;flex-direction:column;box-shadow:-30px 0 80px -30px rgba(34,211,238,.3)}
+.drawer.on{transform:none}
+.dr-head{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.dr-head .x{margin-left:auto;flex:none;width:32px;height:32px;border-radius:9px;border:1px solid var(--line);
+  background:rgba(10,16,30,.8);color:var(--text-2);cursor:pointer;font-size:16px;display:grid;place-items:center;transition:.18s}
+.dr-head .x:hover{border-color:var(--rose);color:var(--rose)}
+.dr-body{flex:1;overflow-y:auto;padding:24px}
+.dr-body::-webkit-scrollbar{width:7px}
+.dr-body::-webkit-scrollbar-thumb{background:rgba(96,165,250,.24);border-radius:4px}
+.dr-title{font-size:20px;font-weight:800;line-height:1.45;margin:12px 0 14px;color:#fff}
+.dr-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.dr-meta .m{font-family:var(--mono);font-size:11px;color:var(--text-2);background:rgba(96,165,250,.08);
+  border:1px solid var(--line);padding:4px 10px;border-radius:7px}
+.dr-sum{font-size:14.5px;color:#cfe0f7;line-height:1.8;padding:15px 17px;border-radius:12px;margin-bottom:22px;
+  background:linear-gradient(135deg,rgba(34,211,238,.09),rgba(167,139,250,.07));
+  border:1px solid rgba(34,211,238,.2);border-left:3px solid var(--cyan)}
+.dr-content{font-size:14px;color:var(--text-2);line-height:1.88}
+.dr-content .li{display:flex;gap:11px;margin-bottom:11px;align-items:flex-start}
+.dr-content .li .bd{width:5px;height:5px;border-radius:50%;background:var(--cyan);flex:none;margin-top:10px;
+  box-shadow:0 0 8px rgba(34,211,238,.7)}
+.dr-content .li .tx{flex:1}
+.dr-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px dashed var(--line)}
+.dr-tags .tg{font-size:11.5px;font-family:var(--mono);color:var(--violet);background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.24);padding:4px 10px;border-radius:7px}
+.dr-foot{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap}
+.btn{flex:1;min-width:130px;text-align:center;text-decoration:none;font-size:13px;font-weight:600;
+  padding:11px 16px;border-radius:11px;cursor:pointer;border:1px solid var(--line-2);color:var(--cyan);
+  background:rgba(34,211,238,.07);transition:.2s;font-family:var(--sans)}
+.btn:hover{background:rgba(34,211,238,.16);box-shadow:0 0 22px -6px rgba(34,211,238,.55)}
+.btn.ghost{border-color:var(--line);color:var(--text-2);background:rgba(10,16,30,.7)}
+.btn.ghost:hover{color:#fff;border-color:var(--line-2);box-shadow:none}
+
+/* ---------- 页脚 ---------- */
+footer{border-top:1px solid var(--line);padding:32px 0 44px;margin-top:20px;
+  font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+footer .fr{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer a{color:var(--text-2);text-decoration:none}
+footer a:hover{color:var(--cyan)}
+
+/* 返回顶部 */
+#top{position:fixed;right:22px;bottom:22px;z-index:70;width:42px;height:42px;border-radius:12px;
+  border:1px solid var(--line-2);background:rgba(8,13,26,.9);color:var(--cyan);cursor:pointer;
+  display:grid;place-items:center;opacity:0;pointer-events:none;transition:.28s;backdrop-filter:blur(10px)}
+#top.on{opacity:1;pointer-events:auto}
+#top:hover{box-shadow:0 0 24px -6px rgba(34,211,238,.6)}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:1fr}
+  .hero{padding:52px 0 34px}
+  .nav-links a{display:none}
+  .console{top:58px}
+}
+@media(max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi .num{font-size:26px}
+  .nav{height:56px}
+  .brand small{display:none}
+  .live{display:none}
+  .drawer{width:100%}
+  .tl-item .d{width:66px;font-size:10px}
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+<div class="bg-scan"></div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <div class="logo">OPC</div>
+      <div>OPC 情报站<small>OPC RADAR</small></div>
+    </div>
+    <div class="nav-links">
+      <a href="#feed">资讯流</a>
+      <a href="#stats">数据洞察</a>
+      <a href="https://github.com/WXzhongwang/opc-radar" target="_blank" rel="noopener">GitHub</a>
+      <div class="live"><span class="dot"></span><span id="clock">--:--:--</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">ONE PERSON COMPANY · 全平台情报聚合</div>
+    <h1>一个人，<span class="grad">就是一支队伍</span></h1>
+    <p class="lede">
+      OPC（<b>One Person Company</b>，一人公司）是 AI 时代以「一人 + 智能体」为核心的轻量化创业范式。
+      本站聚合政策动向、社区落地、创业案例、生态工具、研究报告、赛事活动、风险观察与全球视野共
+      <b id="lede-n">80</b> 条情报，数据来源于 <b id="lede-s">40</b> 余个公开渠道，持续更新。
+    </p>
+    <div class="kpis" id="kpis"></div>
+  </section>
+</div>
+
+<div class="console">
+  <div class="wrap">
+    <div class="console-row">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7d8fab" stroke-width="2.2">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="搜索标题、摘要、正文、标签、来源…  按 / 快速聚焦" autocomplete="off">
+      </div>
+      <select id="sort">
+        <option value="heat">按热度排序</option>
+        <option value="date">按时间排序</option>
+        <option value="cat">按分类排序</option>
+      </select>
+      <div class="seg" id="view">
+        <button data-v="grid" class="on">卡片</button>
+        <button data-v="timeline">时间线</button>
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="main" id="feed">
+    <div class="bar">
+      <h2 id="feed-title">资讯流</h2>
+      <div class="meta">命中 <b id="count">0</b> 条 · 更新于 <b id="updated">—</b></div>
+    </div>
+    <div id="feed-body"></div>
+  </section>
+
+  <section class="stats" id="stats">
+    <div class="bar"><h2>数据洞察</h2><div class="meta">DATA INSIGHT</div></div>
+    <div class="stats-grid">
+      <div class="panel">
+        <h3>分类分布 <span>CATEGORY</span></h3>
+        <div class="donut-wrap">
+          <div id="donut"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>热度 TOP 10 <span>HEAT RANK</span></h3>
+        <div class="rank" id="rank"></div>
+      </div>
+      <div class="panel" style="grid-column:1/-1">
+        <h3>情报时间轴 <span>TIMELINE</span></h3>
+        <div id="trend"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap fr">
+    <div>OPC 情报站 · 数据更新 <span id="f-updated">—</span> · 静态站点由 GitHub Pages 托管</div>
+    <div>参考 <a href="https://github.com/WXzhongwang/bigdata-knowledge-hub" target="_blank" rel="noopener">bigdata-knowledge-hub</a> 架构 · 零外部依赖</div>
+  </div>
+</footer>
+
+<button id="top" title="返回顶部">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+    <path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<div class="mask" id="mask"></div>
+<aside class="drawer" id="drawer">
+  <div class="dr-head">
+    <div style="flex:1">
+      <div class="tag" id="dr-tag">—</div>
+    </div>
+    <button class="x" id="dr-x" aria-label="关闭">✕</button>
+  </div>
+  <div class="dr-body">
+    <div class="dr-title" id="dr-title">—</div>
+    <div class="dr-meta" id="dr-meta"></div>
+    <div class="dr-sum" id="dr-sum"></div>
+    <div class="dr-content" id="dr-content"></div>
+    <div class="dr-tags" id="dr-tags"></div>
+  </div>
+  <div class="dr-foot">
+    <a class="btn" id="dr-src" href="#" target="_blank" rel="noopener">查看原文 →</a>
+    <button class="btn ghost" id="dr-copy">复制为 Markdown</button>
+  </div>
+</aside>
+
+<script>
+/* =========================================================
+   数据：优先内嵌（file:// 直接打开也能用），随后尝试拉取 data.json 刷新
+   ========================================================= */
+var EMBEDDED = {"meta":{"title":"OPC 情报站 · OPC Radar","subtitle":"全平台追踪「一人公司」热门资讯","updated":"2026-09-10","description":"OPC（One Person Company，一人公司）AI 时代轻量化创业范式全平台情报聚合：政策动向、社区落地、创业案例、生态工具、研究报告、赛事活动、风险观察、全球视野。","sourceCount":40,"categories":["政策动向","社区落地","创业案例","生态工具","研究报告","赛事活动","风险观察","全球视野","趋势观察"]},"items":[{"id":"opc-001","title":"北京发布《支持人工智能 OPC 创新发展行动方案（试行）》","category":"政策动向","date":"2026-07-02","source":"央视网 / 北京市经济和信息化局","region":"北京","heat":97,"tags":["OPC贷","开办服务专区","Token增信","算力券"],"summary":"首个把「Token 消耗数据」写进金融增信指标的市级方案，优质路演项目最高可获千万元资金支持。","content":"· 依托北京市中小企业公共服务平台打造「OPC 开办服务专区」，提供开办指引、社区入驻、政策辅导、订单对接全链条服务。\n· 联合金融机构开发专属信贷产品「OPC 贷」，综合运用 Token 消耗数据、赛事获奖情况、创始人征信报告为 OPC 增信。\n· 入驻 OPC 成长社区的企业可领取全栈资源包，免费使用三个月模型与智能算力资源。\n· 运营成效突出的社区可获最高 200 万元专项扶持；优质路演项目最高可获千万元资金支持。\n· 官方编制 OPC 合规指引，涵盖财税管理、知识产权、算法备案、跨境出海等风险要点。","url":"https://city.news.cctv.com/2026/07/03/ARTIOb0mhm2ITfTS4hdNnLRD260703.shtml"},{"id":"opc-002","title":"广东出台全国首个省级人工智能 OPC 专项行动方案","category":"政策动向","date":"2026-06-20","source":"广东省发展改革委","region":"广东","heat":94,"tags":["省级方案","百个生态社区","算力贷","OPC金融产品"],"summary":"省级层面第一个 OPC 专项行动方案：今年培育 10 个引领效应生态社区，2028 年建成百个。","content":"· 目标：今年先行培育 10 个具有引领效应的人工智能 OPC 生态社区，到 2028 年建成百个生态社区，集聚万名创新创业人才。\n· 发挥各类基金投资作用，重点投向人工智能 OPC 社区的高成长性企业。\n· 支持银行推出适配「初创期、成长期、扩张期、成熟期」的 OPC 金融产品，鼓励开发人才贷、研发贷、成果贷、算力贷等细分产品。\n· 广东省「众创杯」创业大赛首次设立人工智能 OPC 专项赛道。","url":"https://www.gdsqzx.com.cn/9625721GK657BNMK4SAD68/7662.html"},{"id":"opc-003","title":"安徽印发 OPC 三年行动方案：Token 可以做贷款抵押","category":"政策动向","date":"2026-08-05","source":"安徽日报 / 安徽省科技厅、人社厅","region":"安徽","heat":93,"tags":["Token贷","模型贷","数据知识产权质押","三年行动方案"],"summary":"全国第二个省级 OPC 三年行动方案，首创以数据知识产权、算法模型著作权作为质押物。","content":"· 定义 OPC 为「以大模型、智能体为核心技术驱动，依托产业场景开展专业化服务的轻量型创业实体」。\n· 鼓励银行创新「Token 贷」「模型贷」，支持以数据知识产权、算法模型著作权作为质押物，破解「无抵押」融资困境。\n· 符合条件的 OPC 创业者可获最高 50 万元个人创业担保贷款、最高 400 万元小微企业创业担保贷款，并给予 50% 财政贴息；算力最高补贴 20%。\n· 到 2028 年：建成省级 OPC 社区不少于 30 个，集聚 OPC 团队不少于 3000 个，带动就业创业超 1 万人，新增智能算力不少于 1.7 万 P。\n· 开发「小巧灵」人工智能解决方案不少于 100 个，打造具有全国影响力的 OPC 典型案例不少于 3 个。","url":"https://szb.ahnews.com.cn/szb/content/202608/18/c1150412.html"},{"id":"opc-004","title":"湖北「人工智能+OPC」新政 12 条：最高 50 万元扶持","category":"政策动向","date":"2026-08-04","source":"随州市人民政府 / 湖北省政府","region":"湖北","heat":88,"tags":["12条","拎包入驻","210一站式","算力券"],"summary":"从服务、要素、资本、成果转化四方面推出 12 条硬核措施，培育「AI+超级个体」。","content":"· 服务生态：符合条件的 OPC 项目纳入湖北省大学生创业扶持范围，给予最高 50 万元资金扶持；成效显著的社区单个最高 500 万元支持。\n· OPC 开办提供「210」一站式服务（2 个环节、1 日办结、0 费用），建立轻微违法行为容错免罚清单。\n· 要素保障：省级首期安排 2000 万元资金鼓励社区提供算力支持；单家 OPC 最高获 3000 元卡时或 token 免费算力，另可按比例申领最高 10 万元算力券。\n· 融资端：符合条件主体可获最高 500 万元创业担保贷款及 50% 财政贴息；楚天凤鸣科创母基金单次最高 100 万元股权投资；鼓励银行推出「算力贷」。\n· 依托公共数据开放网设立 OPC 专区，定期发布「场景机会清单」和「OPC 能力清单」。","url":"http://www.suizhou.gov.cn/zzms/zcjd/202608/t20260804_1442566.shtml"},{"id":"opc-005","title":"北京石景山出台 OPC 创业生态发展措施（试行）","category":"政策动向","date":"2026-07-10","source":"北京市科学技术委员会","region":"北京","heat":82,"tags":["10万启动资金","200万算力券","首次商业化","免费周转住房"],"summary":"八条措施覆盖启动资金、安居保障、模型工具、商业化突破到社区培育的全周期。","content":"· 人才创业启动：重点支持毕业五年内高校毕业生、在校师生团队、科研院所团队创办 OPC，经认定给予 10 万元创业启动资金扶持。\n· 安居保障：为入驻 OPC 社区的人才提供最长 3 个月免费周转住房，优惠期最长 3 年。\n· 模型工具支持：对使用智能体技术工具进行研发创新的企业给予词元或算力券支持，每年最高 200 万元。\n· 首次商业化突破：对形成自主核心成果并实现首次转化的 OPC 企业，给予一次性最高 100 万元资金支持。\n· 社区生态：对入驻率高、辐射带动力强的 OPC 生态友好社区，给予运营主体每年最高 200 万元资金支持。\n· 政务服务：设立 OPC 登记专窗，实现「一站准入、一日办结」。","url":"https://www.ncsti.gov.cn/kjdt/tzgg/202608/t20260817_253717.html"},{"id":"opc-006","title":"杭州发布 OPC 12 项举措，首创「沙盒监管」观察期","category":"政策动向","date":"2026-04-16","source":"杭州市市场监督管理局","region":"杭州","heat":91,"tags":["沙盒监管","工位注册","一址多照","无事不扰"],"summary":"在 OPC 集聚区设 1-3 年观察期，以风险提示替代硬性处罚，给创业者留足试错空间。","content":"· 5 个方面 12 项支持，力度居全国前列；最亮眼的是「沙盒监管」。\n· 在 OPC 集聚区设立 1-3 年观察期，用风险提示替代硬性处罚——先让你跑，出了问题再说。\n· 推行工位注册、一址多照，探索沙盒监管，为信用良好的 OPC 推行「无事不扰」。\n· 西湖区「魔搭社区」线下开发者中心已运营，有微路演、信息墙、协作氛围；萧山区「芯模社区」有西湖大学博士后团队做具身机器人。\n· 官方目标明确：打造全国最具吸引力的 OPC 创业生态。","url":"https://ima.qq.com/wiki/?shareId=21324e54961e97b6c027d7d185a34450119f770bbef958b5224d9825335de6c1"},{"id":"opc-007","title":"深圳《打造人工智能 OPC 创业生态引领地行动计划（2026—2027）》","category":"政策动向","date":"2026-01-15","source":"深圳市人民政府","region":"深圳","heat":84,"tags":["基金引导","种子基金","贷款+外部直投","OPC社区"],"summary":"构建以基金为引导、以信贷为辅助的投融资服务体系，探索「贷款+外部直投」新模式。","content":"· 推动人工智能与具身机器人产业基金、人工智能终端产业投资基金重点关注并投向 OPC 社区高成长性企业。\n· 支持各区为 OPC 社区配套设立种子基金和天使投资基金。\n· 探索「贷款+外部直投」业务新模式，构建基金引导 + 信贷辅助的投融资服务体系。\n· 前海推出「八个零」全链条服务举措：零负担入驻、零操心安居、零成本智算、零距离场景、零抵押信贷、零顾虑基金、零等待激励、零跑腿服务；「零成本」智算每年最高 5OP 免费算力。\n· 龙岗在 AI 智能体「龙虾」爆红后火速推出「龙虾十条」新政，提供免费算力、资金奖励与空间支持。","url":"https://www.gdsqzx.com.cn/9625721GK657BNMK4SAD68/7662.html"},{"id":"opc-008","title":"苏州工业园区首批 10 家 OPC 社区揭牌，6 家获评市级标杆","category":"政策动向","date":"2026-04-20","source":"百度百科 / 苏州工业园区","region":"苏州","heat":85,"tags":["OPC生态联盟","12大领域","标杆社区","全生命周期"],"summary":"苏州是全国 OPC 政策演进的起点城市，2025 年 11 月率先启动「人工智能 OPC 培育发展行动」。","content":"· 2025 年 11 月，苏州率先启动「人工智能 OPC 培育发展行动」，成为全国 OPC 政策演进的关键节点。\n· 2025 年 12 月，苏州高新区 OPC 社区暨 WaytoAGI 苏州 AI 创客工坊在苏州创业园落地。\n· 2026 年 3 月，苏州工业园区 OPC 生态联盟成立，覆盖社区、数据、算力、高校等 12 大关键领域，构建全生命周期创业支持体系。\n· 2026 年 4 月，首批 10 家 OPC 社区揭牌，其中 6 家获批苏州市首批 OPC 标杆社区。\n· 2026 年 6 月，由苏州市人工智能行业协会等近 40 家单位制定的《OPC 社区建设与服务评价指南》发布，成为国内首个针对「单人+AI」创业模式及其承载社区的系统性规范。\n· 苏州首家 OPC 企业获颁数据知识产权登记证书。","url":"https://baike.baidu.com/item/OPC%E5%88%9B%E4%B8%9A%E7%A4%BE%E5%8C%BA/68619288"},{"id":"opc-009","title":"南京江宁麒麟科创园《支持 OPC 企业发展的若干政策》2026 版","category":"政策动向","date":"2026-07-16","source":"南京市江宁区人民政府","region":"南京","heat":76,"tags":["5万启动奖励","30万算力券","人才房补贴","校地联动"],"summary":"从运营机构激励、创业人才扶持、成本减负支持三维度发力，配套人才房租金补贴 30%~100%。","content":"· 给予新注册 OPC 企业 5 万元创业启动奖励、最高 30 万元/年算力券、关键技术项目最高 50 万元/年补贴，配套人才房租金补贴 30%~100%。\n· 区工信局推动将 OPC 企业纳入市级人工智能算力券补贴范围，给予最高 30% 算力费用补贴、单户年度最高 200 万元支持。\n· 区人社局给予一次性创业补贴 6000 元/家、带动就业补贴 2000 元/人、场地租金补贴每月最高 1800 元（最长 3 年）、创业担保贷款最高 50 万元。\n· 江宁开发区、江宁高新区对入驻企业提供免租工位、免费 AI 工具授权、算力与模型券支持。\n· 深化校地合作，联动东南大学、南京理工大学、国科大南京学院建立校地联动工作专班。","url":"https://www.jiangning.gov.cn/jnqrmzf/202607/t20260716_5878249.html"},{"id":"opc-010","title":"衢州出台 OPC 创新发展行动方案：最高 80 万元创业担保贷款","category":"政策动向","date":"2026-07-20","source":"衢州市人民政府（七部门联合）","region":"衢州","heat":70,"tags":["80万担保贷款","创新券","南孔精英","垂直工具包"],"summary":"地市级政策样本：以「南孔精英」人才计划叠加 OPC 专项，围绕本地氟化工、新材料、文旅做垂直工具包。","content":"· 符合条件的 OPC 创业者可申请最高 80 万元创业担保贷款，并给予一定贴息补助。\n· 面向 OPC 提供普惠性算力、语料、模型、智能体等关键要素，会同龙头企业开发适配衢州氟化工、新材料、文旅等特色产业的垂直工具包并开放使用权限。\n· 对符合条件的 OPC 给予最高 10 万元「创新券」补贴。\n· 探索在「南孔精英」中设立 OPC 专项，创新 OPC 人才认定标准，建立以综合专业能力、商业影响力为标准的认定体系。\n· 优化「衢创贷」专项贷款和「衢创担」担保补偿机制，依托四省边际人工智能教育基地开设 OPC 培训课程。","url":"https://www.qz.gov.cn/col/col1229470839/art/2026/art_2dc52c0a3d70447ab7c1bc59b1241033.html"},{"id":"opc-011","title":"四川达州首家 OPC 社区揭牌，年发 300 万「算力券」","category":"政策动向","date":"2026-05-08","source":"达州市市场监督管理局","region":"达州","heat":68,"tags":["明途·通达智谷","算力券","集群注册","一址多照"],"summary":"继成都、绵阳之后四川第三个布局 OPC 生态的地区，填补本地 AI 赋能型「一人创业」孵化平台空白。","content":"· 2026 年 5 月 8 日，达州首家 OPC 社区「明途·通达智谷」揭牌，构建政府、科研院所、龙头企业协同发力的产业格局。\n· 每年发放 300 万元「算力券」，对算力使用费用超过 5 万元且效益显著的主体按实际发生费用的 50% 补贴，每家每年最高 50 万元。\n· 对通过国家网信办备案的大模型，按研发投入的 30% 予以一次性补贴，最高 200 万元。\n· 推行「一址多照」、集群注册等便利化措施，支持一人公司托管登记，降低场地成本。\n· 市级财政设立科技专项资金 4000 万元，支持高新技术企业发展。","url":"https://scjgj.dazhou.gov.cn/xxgk-show-16971.html"},{"id":"opc-012","title":"上海杨浦打造复兴岛 OPC 超级个体社区","category":"政策动向","date":"2026-05-20","source":"上海市杨浦区人民政府","region":"上海","heat":80,"tags":["超级个体","Tokens服务","合火人计划","OpenClaw首站"],"summary":"整合 AI 智能工具集、垂类智能体、Tokens 服务全链条，火山引擎同步落地「合火人」专项计划。","content":"· 2026 年 5 月印发《关于支持打造 OPC 超级个体社区的若干措施》，依托复兴岛打造 OPC 超级个体社区。\n· 整合提供 AI 智能工具集、垂类智能体、Tokens 服务等全链条 AI 工具，并配套创业扶持举措。\n· 火山引擎同步落地杨浦「合火人」专项计划及专属补贴政策，大模型调用补贴最高可达 50%。\n· 入驻火山工场 AI Agent 产业园的企业，可直接调用通用 PPT、法务、营销、招聘、财务五大智能体。\n· 以复兴岛星火社区为核心载体，举办 AI 应用「超级个体」训练营、四城「虾王」争霸赛，打造「OpenClaw 上海首站社区」。","url":"https://www.shyp.gov.cn/zhengwu/bljggk-kw/2026/209/3929.html"},{"id":"opc-013","title":"无锡梁溪设立 3 亿元 OPC 种子基金，首发 OPC 信用评价体系","category":"政策动向","date":"2026-08-24","source":"无锡市工商业联合会","region":"无锡","heat":83,"tags":["3亿种子基金","信用评价体系","10家银行","生态服务联盟"],"summary":"由锡跃 SPACE 与远东执信共建的 OPC 信用评价体系已在中国人民银行完成备案，联动银行落地信用增信机制。","content":"· 梁溪首发上线 OPC 信用评价体系，由锡跃 SPACE 与远东执信等机构联合共建，已在中国人民银行完成备案，破解轻资产融资痛点。\n· 工商银行、中国银行、交通银行、中信银行、招商银行、兴业银行、浙商银行、江苏银行、南京银行、宁波银行 10 家银行发布 OPC 相关金融产品。\n· 发布梁溪区首个总规模 3 亿元的 OPC 种子基金，联动创投基金、产业投资机构协同赋能。\n· 梁溪 OPC 服务平台同步上线，集 AI 工具、智能体、大模型与园区服务于一体；推出模型试用券、算力抵扣券。\n· 梁溪区、梁溪科技城 OPC 生态服务联盟揭牌，阶跃星辰、阿里云、阿里国际站、联想百应、中国移动、中国电信、氪星创服 7 家头部企业加入。\n· 江南大学人工智能 OPC 创新中心推行「教授+产业」双导师制，设立 1 亿元专项基金。","url":"https://cc.wuxi.gov.cn/doc/2026/08/24/4821774.shtml"},{"id":"opc-014","title":"杭州余杭：1 亿元 AI 生态基金 + 2 亿元 OPC 专项授信","category":"政策动向","date":"2026-06-10","source":"杭州市余杭区人民政府","region":"杭州","heat":74,"tags":["AI生态基金","耐心资本","专项授信","一网通办"],"summary":"2025 年底设立规模 1 亿元的 AI 生态（人才）基金，重点投向大模型、AI 智能体、AI 应用等早期项目。","content":"· 2025 年底，区国投集团主导的 AI 生态（人才）基金正式设立，规模 1 亿元，重点投向余杭早期未来产业项目。\n· 截至 2026 年 4 月，区国投集团与君联资本、元璟资本、农银资本等头部机构已组建多支综合类基金，合计规模超 120 亿元。\n· 浙江余杭农商行设立总额度达 2 亿元的专项授信资金池，定向支持辖区内「AI+OPC」项目，采用「政府引导+银行跟进」联动模式。\n· 仓前街道发布「OPC 服务十条」，构建「全周期陪伴、全场景覆盖、全要素赋能」服务体系。\n· 未来科技城发布《全域友好创新生态体系十二条》，以政策友好、空间友爱、生态友睦、服务友善「四友」框架构筑支持系统。\n· 线上通过「企业开办一件事」平台实现企业全生命周期服务「一网通办」。","url":"https://www.yuhang.gov.cn/col/col1229797525/art/2026/art_364875b841a144c998d96f86975ac481.html"},{"id":"opc-015","title":"青岛设立首只「AI-OPC」科创基金，5 万~50 万元精准小额投资","category":"政策动向","date":"2026-05-12","source":"广东省企业联合会","region":"青岛","heat":72,"tags":["科创基金","小额投资","七大细分赛道","算力券"],"summary":"聚焦 AIGC 内容创作、直播电商、垂直行业智能体、AI 出海等七大细分赛道，以小额投资叠加专项扶持政策。","content":"· 山东省青岛市设立首只「AI-OPC」科创基金，重点聚焦 AIGC 内容创作、直播电商、垂直行业智能体、AI 出海等七大细分赛道。\n· 以 5 万~50 万元精准小额投资叠加 OPC 专项扶持政策，为 OPC 提供创业启动资金。\n· 青岛推出涵盖算力券、人才补贴、创业贷款等 12 项措施，为 OPC 创业者提供「拎包入驻、即刻创业」环境。\n· 郑海峰的焱森垚（青岛）数字文化创意内容制作有限公司从提出想法到决定落户仅用 1 天，从业务办理到领取 OPC 营业执照仅用半小时。\n· 「十五五」期间青岛将加快形成以海洋人工智能为特色、「单人+多智能体」为形态的创新创业高地。","url":"https://www.gdsqzx.com.cn/9625721GK657BNMK4SAD68/7662.html"},{"id":"opc-016","title":"全国 OPC 社区已达 426 个，覆盖 28 个省级行政区、65 座城市","category":"社区落地","date":"2026-07-23","source":"新华网 / 复旦大学姚建华教授团队","region":"全国","heat":96,"tags":["426个社区","东密西疏","106项政策","五类画像"],"summary":"OPC 社区已突破核心城市试点阶段，东部集聚 335 个（78.6%），江苏以 158 个位居全国首位。","content":"· 截至 2026 年 5 月，全国共有 426 个 OPC 社区，覆盖 28 个省级行政区和 65 个城市。\n· 空间分布呈「东密西疏呈梯度」：东部 335 个（78.6%）、中部 52 个（12.2%）、西部 31 个（7.3%）、东北仅 8 个（1.9%）。\n· 江苏以 158 个社区位居全国首位，山东、广东、浙江、北京、湖北、上海次之。\n· 截至 2026 年 5 月，全国已有 20 个省（自治区、直辖市）对 OPC 进行政策布局，共发布 106 项 OPC 专项政策、行动计划及配套措施。\n· 政策演进三阶段：2025 年下半年议题独立于泛人工智能政策 → 2025 年 11 月苏州率先启动 → 2026 年春季集中爆发。","url":"https://www.news.cn/digital/20260723/b239027e765f49bb8e584e02d684ea6e/c.html"},{"id":"opc-017","title":"北京东城和平·in OPC 社区首批 10 家企业入驻","category":"社区落地","date":"2026-09-01","source":"人民网北京频道","region":"北京","heat":92,"tags":["和平·in","首都核心区","实质运营","四维赋能"],"summary":"东城首家 OPC 产业社区迈入实质运营，首批企业覆盖企业合规、智能体应用、商业决策、数字营销、文化科技、智慧教育等领域。","content":"· 2026 年 9 月 1 日，和平·in OPC 社区首批企业入驻仪式暨合作发展大会在玖安广场举办，东城区首家 OPC 产业社区从揭牌启动迈入实质运营。\n· 锚定「首都核心区 AI 产业承载地、国内 AI 青年创新生态港、国际 AI 应用场景开放谷」三大定位。\n· 构建「载体+算力+场景+服务」四维赋能体系，推动人工智能与东城区「321」产业体系深度融合。\n· 中国移动北京公司、中国工商银行北京分行、香港数码港、智源研究院、菠萝智云、启迪大街未来产业创新中心等已全面开放合作资源。\n· 常态化运营「悦·思享」「悦·创营」「悦·投会」活动矩阵，已初步形成高活跃度 AI 青年创新集群。","url":"https://bj.people.com.cn/n2/2026/0903/c14540-41686022.html"},{"id":"opc-018","title":"「京港 OPC 开放创新协作中心」落地北京东城","category":"社区落地","date":"2026-09-02","source":"京报网 / 央广网","region":"北京","heat":90,"tags":["京港协作","香港数码港","双向快车道","开源协作大会"],"summary":"打通北京产业场景与香港国际资源通道，推动东城区与香港高校、香港数码港建立常态化协作机制。","content":"· 2026 年 9 月 2 日，在「iPollo·2026 全球 OPC 开源协作大会」上，「京港 OPC 开放创新协作中心」正式揭牌。\n· 中心围绕场景开放、项目共创、企业双向落地、投融资对接等方向，构建京港两地创新资源双向流动的开放网络。\n· 大会面向个人创业者和小型团队开放 AI 工作平台，用户通过对话即可发起任务，完成文档、演示、网页、代码等成果的生成与交付。\n· 同步推出首批社区应用场景，为入驻团队提供 AI 工具、技术服务和商业授权支持，在真实创业环境中验证 AI 对生产效率的提升。\n· 未来将围绕产业场景开放、项目共创验证、企业双向落地、开发者培养、投融资对接和国际市场拓展开展合作。","url":"https://www.toutiao.com/article/7681217605033525794"},{"id":"opc-019","title":"广州天河元岗智汇 OPC 社区揭牌，定位「AI 创业生态连接器」","category":"社区落地","date":"2026-09-04","source":"金羊网","region":"广州","heat":86,"tags":["5+2赋能体系","免费工位","算力补贴","生态连接器"],"summary":"不止提供工位与算力，更着力构建涵盖工具、场景、订单、协作与交付的完整成长链条。","content":"· 2026 年 9 月 4 日，「AI 启新程 智创兴天河」AI 创业资源对接会暨元岗智汇 OPC 社区揭牌仪式在广州天河元岗智汇 PARK 举行。\n· 推出「5+2 创新加速赋能体系」，提供免费办公工位、免费算力补贴、工商代办、活动场地、资源链接等基础服务，并打通投融资对接与政企资源通道。\n· 园区与奇墨科技联合发布「OPC 智创双擎扶持计划」，从场地与算力两端强化创业支撑。\n· 熊管家 AI、星织未来、品类实验室、数智心育、智剧工场等首批项目集中亮相，覆盖跨境电商、服装设计、零售、教育、内容创作等多元领域。\n· 以开放式社区设计、通透公共空间与潮流化建筑语言，营造「可停留、可交流、可偶遇」的松弛氛围。","url":"https://news.ycwb.com/ikimvkbtkn/content_54288462.htm"},{"id":"opc-020","title":"惠州惠阳 OPC-NEXT 人工智能未来社区揭牌，六大「AI+业态」入驻","category":"社区落地","date":"2026-08-28","source":"南方+ 客户端","region":"惠州","heat":81,"tags":["AI+短剧","具身智能","城投建设","4200万投资"],"summary":"建筑面积逾 9000 平方米、总投资超 4200 万元，打造以科技孵化器为基底、OPC 创业社区为特色的综合体。","content":"· 2026 年 8 月 28 日，惠阳 OPC 生态大会召开，惠阳首个 OPC-NEXT 人工智能未来社区揭牌，落地惠阳区具身智能产业园。\n· 「AI+短剧」「AI+虚拟电厂」「AI+BIM」「AI+面试」「AI+大家居服务」「AI+玩具」六大「AI+业态」入驻汇聚同一社区。\n· 社区建筑面积逾 9000 平方米，总投资超 4200 万元，包含成果展示、场景体验、项目孵化、培训交流与供需对接功能。\n· 引入企业惠州小鱼科技从 2026 年 6 月开始试运营，主攻「AI+短剧」。\n· 惠阳城投集团提供「保姆式」全周期孵化服务与「拎包入住」一站式配套保障。","url":"https://www.toutiao.com/article/7679702656260112911"},{"id":"opc-021","title":"合肥（庐江）First 青年 OPC 社区揭牌，首个文旅垂类社区","category":"社区落地","date":"2026-08-29","source":"央广网","region":"合肥","heat":75,"tags":["文旅垂类","乡村振兴","白天敲键盘夜晚看星星","政务订单"],"summary":"把「一人公司」的轻量化创业模式搬进乡野，打通政府订单、政策扶持、空间配套、社群生态完整链条。","content":"· 2026 年 8 月 29 日，合肥（庐江）First 青年 OPC 社区正式揭牌运营，是合肥市首个文旅垂类 OPC 社区。\n· 坐落于万山镇闸山，周边布局主题乐园、乡野咖啡、特色街区、田园民宿、露营基地、乡村影院等乡村潮玩业态。\n· 面向乡村运营主理人、数字游民、文旅创业者、返乡青年开放，打造「白天敲键盘，夜晚看星星」创业场景。\n· 活动现场庐江县文旅局发布社区硬件配套，解读扶持政策与创业通道，同步对外发布多笔政务创业订单。\n· 庐江县对外推介十大文旅合作项目，面向青年创业群体开放合作渠道。","url":"https://so.html5.qq.com/page/real/search_news?docid=70000021_0956a94d21d30952"},{"id":"opc-022","title":"苏州布局 20 余个 OPC 社区，全国首个省级开源社区落地","category":"社区落地","date":"2026-08-28","source":"搜狐 / 2026 开源创新生态大会","region":"苏州","heat":87,"tags":["开源社区","开放原子紫金专区","双中心联动","16家签约"],"summary":"以「苏州吴中+南京雨花」双中心联动模式，打造全国首个人工智能 OPC 专业开源孵化社区。","content":"· 2026 年 8 月 28 日，2026 开源创新生态大会在苏州举办，吴中区布局 20 余个 OPC 社区。\n· 推动全国首个省级开源社区——开放原子紫金专区落地，现场开放原子紫金专区 OPC 项目孵化中心揭牌。\n· 16 家首批入驻项目集中签约，覆盖 AI 大模型、具身智能、医疗科技等赛道。\n· 大会发布 OPC 孵化行动计划，以「苏州吴中+南京雨花」双中心联动发展模式，打造全国首个人工智能 OPC 专业开源孵化社区。\n· 吴中区正全力打造「机器人+人工智能」产业地标，依托太湖科创生态推进布局。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-023","title":"成都科梦 OPC 社区开园：全国首个「科幻 IP + AI」社区","category":"社区落地","date":"2026-08-20","source":"搜狐 / OPC 雷达","region":"成都","heat":79,"tags":["科幻IP","AIGC影视","数字人","100个团队"],"summary":"首期 2500 平方米可容纳超 100 个 OPC 团队，已吸引 400 余个 OPC 报名，首批筛选 15 个优质项目。","content":"· 成都科梦 OPC 社区正式亮相，是全国首个科幻 IP 与 AI 结合的 OPC 社区。\n· 首期 2500 平方米，可容纳超 100 个 OPC 团队，已吸引 400 余个 OPC 报名，首批筛选 15 个优质项目。\n· 聚焦 AIGC 影视制作、文化 IP 运营、AI 模型工具开发、虚拟数字人演艺、Agent 智能体应用等细分领域。\n· 成都印发《打造人工智能 OPC 创新发展新高地行动计划》，是全国首个 WorkBuddy OPC 合作社区落地城市。\n· 成都天府新区是 OPC 地方实践的代表性探索区域之一。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-024","title":"上海临港「零界魔方」OPC 社区入驻率达 100%","category":"社区落地","date":"2026-05-28","source":"浙江省经济信息中心 / 国家发改委","region":"上海","heat":84,"tags":["临港","零界魔方","满租","近千家一人公司"],"summary":"上海市人工智能协会副秘书长沈涛：上海一人公司规模已接近千家，且仍在逐日扩张。","content":"· 上海临港新片区推出的「零界魔方」OPC 社区，入驻率已达 100%。\n· 上海市人工智能协会副秘书长沈涛表示，过去一两年间上海的一人公司规模已接近千家，且仍在逐日扩张。\n· 上海「十五五」规划《纲要》明确提到，打造一人公司（OPC）创新创业生态。\n· 上海徐汇八大 OPC 社区亮相，徐汇资本累计认缴超 90 亿元，形成基金矩阵超 900 亿元。\n· 上海杨浦区与火山引擎合作推出 OPC 超级个体社区；上海商汤 OPC 社区在西岸智塔亮相；上海张江数字游民 OPC 生态社区启动。","url":"https://zjic.zj.gov.cn/ywdh/tzgl/202605/t20260528_24094923.shtml"},{"id":"opc-025","title":"北京中关村 AI 北纬社区集聚近百家 AI 原生企业，纯一人公司 29 家","category":"社区落地","date":"2026-05-28","source":"国家发展和改革委员会 / 环球杂志","region":"北京","heat":82,"tags":["中关村","AI原生企业","共享工位","一张办公桌"],"summary":"共享工位、独立电话亭、路演厅构成 OPC 日常场景，一张办公桌就是一家企业的起点。","content":"· 北京中关村 AI 北纬社区已集聚近百家 AI 原生企业，纯一人公司达 29 家，覆盖 AI+工业、AI+文旅、AI+金融等多个赛道。\n· 共享工位、独立电话亭、路演厅构成 OPC 的日常场景，一张办公桌就是一家企业的起点。\n· 运营负责人任闯介绍，社区经常开展产业龙头企业走访交流、专场路演活动，搭建涵盖空间运营、创业孵化、企业服务、融资赋能、人才社群在内的 OPC 生态体系。\n· OPC 最怕的是「为了技术而技术」，找不到盈利场景——北纬社区正是针对这一痛点做场景对接。\n· 北京经开区、东城区等地相继揭牌首批或首个市级 OPC 社区。","url":"https://www.ndrc.gov.cn/wsdwhfz/202605/t20260515_1405211.html"},{"id":"opc-026","title":"杭州鸿鹄汇：1300 份申请只留 30 余个，免费入驻 + 40 万元扶持","category":"社区落地","date":"2026-04-10","source":"杭州市政协 / 杭州日报","region":"杭州","heat":89,"tags":["鸿鹄汇","Honghub","40万扶持","97%筛选率"],"summary":"全国最早成立的 OPC 社区之一，坚持免费入驻原则，对通过评审的项目给予 40 万元资金扶持。","content":"· 鸿鹄汇（Honghub）社区自 2025 年 9 月启动以来，已收到超过 1300 份创业项目申请，筛选入驻 30 多个「超级个体」项目，筛选率约 97%。\n· 坚持免费入驻原则，对通过评审的项目给予 40 万元资金扶持。\n· 入驻企业主要分两类：一类是 AI 生产力工具（语音助手、工业级 AI 应用等），另一类是创意产业（动漫、短剧、AI 影视结合等）。\n· 社区真正提供的价值不是传统意义上的资源分发，而是「高频、低门槛、开放式」的信息交换环境。\n· 已加入的 OPC 中，20% 调整了核心业务方向，30% 验证了商业模式可行性——超过半数经历了实质性变化。","url":"https://www.hzzx.gov.cn/cshz/content/2026-04/10/content_9204499.htm"},{"id":"opc-027","title":"广州南沙国际 OPC 生态社区：广州首个万兆光宽带 OPC 主题社区","category":"社区落地","date":"2026-03-24","source":"广州市科学技术局","region":"广州","heat":78,"tags":["南沙","万兆光宽带","三社区矩阵","拎包开干"],"summary":"聚焦「1人+AI」创业形态，围绕人工智能、数字文创、跨境电商等核心赛道，实现「拎包开干」。","content":"· 2026 年 3 月 24 日，作为广州首个万兆光宽带加持的「OPC+OpenClaw」主题生态社区，南沙国际 OPC 生态社区揭牌。\n· 4 月 29 日，南沙湾数字文化 OPC 社区在蒲洲广场揭牌，以普惠创业零门槛开放为特色，聚焦影视+AI 漫剧、游戏、电商等赛道。\n· 5 月 13 日，南沙未来产业训练营 OPC 社区在国际人才港亮相，是南沙首个由国企打造的 OPC 社区，聚焦低空经济、细胞与基因治疗、人工智能三大硬核赛道。\n· 启动招募一个月内收到 56 名人才申请，最终择优录取 40 人，其中人工智能 37 人。\n· 三个社区定位互补，在南沙形成一张 OPC 生态网。","url":"https://kjj.gz.gov.cn/xwlb/yw/content/post_10962460.html"},{"id":"opc-028","title":"粤港澳大湾区 OPC 社区矩阵成型：东莞、珠海、前海多点开花","category":"社区落地","date":"2026-04-24","source":"南方都市报 / 创享湾区","region":"大湾区","heat":80,"tags":["松山湖","创港OPC","前海八个零","港澳服务社区"],"summary":"东莞模立方、珠海创港、深圳前海国际社区陆续投运，大湾区竞逐 OPC 新赛道。","content":"· 东莞松山湖：2026 年 2 月 6 日，东莞首个聚焦人工智能与大模型领域的 OPC 专业孵化平台「模立方 OPC 生态社区」正式投入运营，构建「1+2」莞深港跨域协同基地布局。\n· 珠海香洲：2026 年 3 月 15 日，首批面向全市创业者的 OPC 产业载体「创港 OPC 社区」正式投入运营，以「拎包开干」为核心理念。\n· 深圳前海：2026 年 4 月 24 日，前海 OPC 国际社区拟被认定为前海首个人工智能 OPC 社区，推出「八个零」全链条服务。\n· 广州天河：2026 年 4 月 1 日，粤港澳大湾区首个 OPC 港澳服务社区落地广州天河，推出「七免两低」政策。\n· 广州海珠：「琶洲元创·OPC 社区」2026 年 3 月 31 日开门迎新，联合中科科创设立首笔 1000 万元专项 OPC 创业孵化基金。","url":"https://www.163.com/dy/article/L447J2FD05129QAF.html"},{"id":"opc-029","title":"无锡「锡跃 SPACE」获评江苏省首批 OPC 社区","category":"社区落地","date":"2026-08-24","source":"无锡市工商业联合会","region":"无锡","heat":71,"tags":["锡跃SPACE","15分钟创业生活圈","让个体更强大","长三角"],"summary":"秉持「让个体更强大，让创业更简单」理念，打造长三角青年创新创业高地。","content":"· 锡跃 SPACE 获评江苏省首批 OPC 社区，打造长三角青年创新创业高地。\n· 梁溪区同步搭建生态载体，形成「点（标杆项目）+线（政策扶持）+网（生态载体）」的完整结构。\n· 开放场景，全域构建「15 分钟创业生活圈」——OPC 创业者最大的痛点从来不是能力，是订单。\n· 组织政银企对接洽谈，为 OPC 创业者提供金融、法律、租房、停车、算力、消费补贴等一站式权益咨询与场景对接服务。\n· 无锡高新区发布全市首个 OPC 知识产权服务指南。","url":"https://cc.wuxi.gov.cn/doc/2026/08/24/4821774.shtml"},{"id":"opc-030","title":"威海首个 OPC 社区在经区智慧谷「起跑」","category":"社区落地","date":"2026-08-26","source":"威海市大数据局","region":"威海","heat":73,"tags":["拎脑入住","智慧谷","培育闭环","返乡创业"],"summary":"与传统的「拎包入住」不同，这里实现「拎脑入住、即刻创业」——带着想法和技术就够了。","content":"· 威海首个 OPC 社区——经区智慧谷 OPC 社区投入运营，「一个人就是一支团队，一个人撑起一家公司」是这里最常见的风景。\n· 构建「AI 学习—人才沉淀—实战训练—项目筛选—创业孵化—入驻转化—资源对接」的 OPC 创业培育闭环。\n· 与传统的「拎包入住」不同，这里真正实现「拎脑入住、即刻创业」。\n· 案例：80 后威海青年王巍巍从传统手绘漫画家转型，原先两天完成的画稿如今最快一两个小时完成，带着《天命设计师》入驻社区。\n· 案例：吴少鹏辞职返乡成立一人公司，「一个人加 AI，就是过去 3—5 人小团队的产出」，回威海不到一个月就拿下过万元订单。","url":"https://dsj.weihai.gov.cn/art/2026/8/26/art_19162_6569026.html"},{"id":"opc-031","title":"杭州拱墅推出「运河启源 AI STORE 平台」，以 Token 券降门槛","category":"社区落地","date":"2026-09-01","source":"搜狐 / OPC 雷达","region":"杭州","heat":69,"tags":["Token券","AI STORE","模型调用","算力分散"],"summary":"聚焦 AI 模型调用成本高、算力分散等痛点，以 Token 券为核心政策工具降低创新门槛。","content":"· 拱墅区推出「运河启源 AI STORE 平台」。\n· 聚焦 AI 模型调用成本高、算力分散等痛点，以 Token 券为核心政策工具降低创新门槛。\n· 与无锡梁溪的模型试用券、算力抵扣券形成同类探索——「券」正在成为 OPC 政策工具箱的通用语言。\n· 杭州官方下场加码，与鸿鹄汇等民间社区形成「官方+民间」双轮驱动格局。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-032","title":"贵阳黄江华：一个人运营四大 AI 平台，月营收 3 万元","category":"创业案例","date":"2026-07-10","source":"贵州日报 / 贵州省大数据发展管理局","region":"贵阳","heat":88,"tags":["栅格兽","SkillsBot","数字员工","非科班"],"summary":"仅参加四个多月 IT 培训班便跨界入行，用三个月搭建四个智能化平台，还成功申报了发明专利。","content":"· 贵州灵蛛科技有限责任公司负责人黄江华，四个平台整体月营收在 3 万元左右，且还在持续稳步增长。\n· 核心产品「栅格兽」定位「一句话生成生产级网页」，通过一句文字指令即可生成机械论坛网页模型。\n· 2026 年 2 月启动平台研发，仅用一个月完成主体功能开发，3 月全平台上线；SkillsBot 比腾讯同类产品 SkillHub 上线早两周。\n· SkillsBot 上线三个多月累计汇聚 3 万余个优质 AI 技能，覆盖 40 余个主流行业分类，月均总访问量近 9 万次。\n· 四大平台构成多元营收体系：SkillsBot 靠技能下载套餐流量变现，萃智引擎承接制造业定制大单，栅格兽走会员订阅+项目定制。\n· 他并非计算机科班出身，仅在贵阳参加四个多月 IT 培训班后跨界踏入 IT 行业。","url":"https://dsj.guizhou.gov.cn/xwzx/snyw/202607/t20260713_90613580.html"},{"id":"opc-033","title":"杭州李云帆：「作文说」月入近 5 万，5000 元算力替代 4 人团队","category":"创业案例","date":"2026-04-10","source":"杭州市政协 / 杭州日报","region":"杭州","heat":90,"tags":["作文说","垂域切口","28个子场景","订阅制"],"summary":"死磕「语文老师和英语老师批改作文」这一极小切口，拆出 28 个细分子场景。","content":"· AI 作文批改产品「作文说」注册用户突破 2 万人，稳定订阅收入比 2 个月前翻了一倍，月入近 5 万元。\n· 三个多月、一个人，电脑端、手机端、小程序、鸿蒙、安卓、iOS 全都有了——AI 帮他写代码、做测试、跑算法，甚至自动化运维。\n· 每个月 5000 多元的算力支出，换来了原本 4 人团队才能完成的产出。\n· 他没有做大而全的 AI 写作助手，而是死磕「语文老师和英语老师批改作文」这一极小切口，拆出 28 个细分子场景。\n· 老师可以自定义评分方案、上传课件。他说：「第一次人工复核要半小时，第三次就会发现 AI 已经给出他想要的结果。」\n· 本科会计和计算机双学位，工作三年后辞职读研，2025 年 9 月用 AI 重构「作文说」。","url":"https://www.hzzx.gov.cn/cshz/content/2026-04/10/content_9204499.htm"},{"id":"opc-034","title":"上海嘉定赵嬛嬛：一人公司月入百万，还给自己配了个 AI CFO","category":"创业案例","date":"2026-08-15","source":"上海市嘉定区人民政府","region":"上海","heat":91,"tags":["AI CFO","月入百万","三类收入","时薪思维"],"summary":"用 AI 做了一个「CFO」——一个帮她监控每月财务模式的智能体，一旦触及 2 万元成本线就自动弹窗提醒。","content":"· 赵嬛嬛坦言，作为一人公司，她既没有员工薪资和社保公积金的固定支出，也无需承担大面积办公场地租赁费用。\n· 她用 AI 做了一个「CFO」，把收入分为三类：短期来自 ToC 一对一咨询（现金流快，周结或月结）；中期来自机器人营销增长服务（按季度回款）；长期来自 FA 融资对接（回报高但周期长）。\n· AI 会实时监控账户余额，一旦触及每月保底 2 万元的生活与学习成本线，就自动弹窗提醒她调整业务重心或加速回款。\n· 在她看来，OPC 最大的优势不在于「省」，而在于「效率」——「OPC 哪怕这个月到手只有 3 万元，真正付出的有效时间也远低于在企业里」。\n· 她毕业后依然积极参加复旦、交大、清华、北大以及中欧商学院等学习和企业家交流活动，「这种终身成长的价值，远比短期利润更重要」。","url":"https://www.jiading.gov.cn/xinwen/jddt1/jjxw1/content_973094"},{"id":"opc-035","title":"上海李川鸣：20 多台机器人 + 一个人，月赚 50 万","category":"创业案例","date":"2026-08-15","source":"上海市嘉定区人民政府","region":"上海","heat":85,"tags":["机器人军团","二次开发","商演租赁","硬科技"],"summary":"一个人撑起一支「机器人军团」，业务版图覆盖娱乐、工业、安防多个场景，累计做过 500 多场活动。","content":"· 上海川合未来智能科技有限公司 CEO 李川鸣，仅凭 20 多台机器人，一个人就能撑起一支「机器人军团」。\n· 公司专注于机器人的二次开发与租赁商演服务，在机器人本体芯片上进行深度功能拓展。\n· 业务从定制化舞蹈编排到自主导览系统，从灵巧手弹钢琴到消防安防机器狗改装，覆盖娱乐、工业、安防等多个场景。\n· 大大小小的活动累计做过 500 多场，涵盖大型演唱会、政府企业晚会、教育教培活动，甚至婚宴和晚宴。\n· 与赵嬛嬛的「软实力」路径形成对照，李川鸣证明了 OPC 在硬科技领域的爆发力。","url":"https://www.jiading.gov.cn/xinwen/jddt1/jjxw1/content_973094"},{"id":"opc-036","title":"Base44：单人 6 个月做到月利润 18.9 万美元，被 Wix 约 8000 万美元收购","category":"创业案例","date":"2026-06-01","source":"海外媒体 / Solo-Corn 时代报道","region":"全球","heat":94,"tags":["Solo-Corn","Base44","被收购","单人公司"],"summary":"多家海外媒体将「单人 AI 创业公司达到千万级营收/估值」称为 Solo-Corn 时代。","content":"· 典型案例：Base44（Maor Shlomo）单人 6 个月做到月利润 18.9 万美元，被 Wix 以约 8000 万美元收购。\n· BoredHumans（Nick Dobos）单人运营 100+ AI 工具，年经常性收入 880 万美元。\n· Daymaker（20 岁 William Lindholm）无代码配送自动化，5 个月月入超 11 万美元。\n· 共同逻辑是 AI 替代了团队而非创始人——单人用 AI 编排编码、设计、客服、营销，单位经济性是传统创业的 10–50 倍。\n· 对照国内，广东等地 OPC 政策与社区热潮正处同一条曲线早期，但需警惕「AI 只是放大器、不是发动机」的共识。","url":"https://ima.qq.com/wiki/?shareId=29cf1078858690bdb6dca1b26fd372cf41d5e1aebc4663404f1d0ff6d886b195"},{"id":"opc-037","title":"18 岁 Vadim 养 15 个「龙虾员工」24 小时接外包，月成本不到 400 美元","category":"创业案例","date":"2026-07-15","source":"社区情报 / TrustMRR 公开营收追踪","region":"全球","heat":87,"tags":["OpenClaw","Agent矩阵","外包","低成本"],"summary":"OpenClaw + Claude + GLM 组合，获客 450+，年入上万美元，月成本不到 400 美元。","content":"· 18 岁零基础 Vadim 用 OpenClaw + Claude + GLM 养 15 个「龙虾员工」24 小时接外包。\n· 月成本不到 400 美元，获客 450+，年入上万美元。\n· 这是 OPC 超级个体「一人 + AI Agent 矩阵」最密集的公开样本之一。\n· 印证「窄场景 + 高毛利数字交付 + AI 替代团队」已成可复制路径。\n· 定价端可锚「地板月费 + 按交付抽成」，也为单人 AI 工作流的成本护栏（月成本 < $400）给出可对标坐标。","url":"https://ima.qq.com/wiki/?shareId=29cf1078858690bdb6dca1b26fd372cf41d5e1aebc4663404f1d0ff6d886b195"},{"id":"opc-038","title":"OpenClaw 生态 156 个项目横截面：平均月入 2432 美元，头部 5 万美元","category":"创业案例","date":"2026-03-31","source":"TrustMRR 公开营收追踪平台","region":"全球","heat":86,"tags":["营收追踪","156个项目","零融资","两三人小队"],"summary":"过去 30 天合计营收 379,631 美元，项目最长成立不超 6 周，几乎零融资、零办公室。","content":"· 截至 2026 年 3 月，TrustMRR 平台收录 156 个基于 OpenClaw 的创业项目。\n· 项目最长成立不超 6 周，过去 30 天合计营收 379,631 美元，平均每个项目月入 2,432 美元，头部单月高达 50,000 美元。\n· 这些项目几乎零融资、零办公室，由个人或两三人小队跑起。\n· 该数据来源为第三方 Stripe 级营收追踪平台，为 OPC「一人 + AI Agent 矩阵」提供了可验证的公开营收样本。\n· 注：该数据来自社区聚合整理，底层来源为 TrustMRR 公开营收追踪平台，建议交叉验证。","url":"https://ima.qq.com/wiki/?shareId=29cf1078858690bdb6dca1b26fd372cf41d5e1aebc4663404f1d0ff6d886b195"},{"id":"opc-039","title":"济南李马辉：5 人团队年营收 700 万元，工位租赁费仅 3.5 万/年","category":"创业案例","date":"2026-04-17","source":"半月谈 / 新华网山东频道","region":"济南","heat":77,"tags":["体育用品","国际贸易产业园","轻资产","AI设计"],"summary":"「如果没有 AI 工具，像我这样赤手空拳、懵懵懂懂创业的，很难成功。」","content":"· 李马辉创办的「一人公司」运用 AI 工具设计和销售体育用品和健身器材。\n· 入驻济南中央商务区国际贸易产业园后，每年工位租赁费仅需 3.5 万元，核心团队 5 人。\n· 2025 年营业额达 700 万元人民币（约 101 万美元），租金与人力成本极低。\n· 园区为入驻企业提供资质办理、财税服务、人才支持、供应链对接、全球展会、融资支持、多元培训等一站式全流程服务。\n· 济南市「数智生态 OPC 社区」自 2 月初启动以来，首批入驻企业数量达 51 家。","url":"http://www.sd.xinhuanet.com/20260417/13da7ae6abb44b2a954d7db12d938a1f/c.html"},{"id":"opc-040","title":"贵阳 00 后大学生：服务近 500 名客户，每月总开支两三千元","category":"创业案例","date":"2026-09-01","source":"搜狐 / OPC 雷达","region":"贵阳","heat":74,"tags":["00后","校园孵化型","极低成本","上万客单"],"summary":"贵州大学两位 00 后学生各自经营 AI 加持的一人公司，AI 调用费用仅百余元。","content":"· 贵州大学两位 00 后学生，各自经营 AI 加持的一人公司。\n· 已服务近 500 名客户、累计上万客单。\n· 每月总开支两三千元，其中 AI 调用费用仅百余元。\n· 属于《2026 年中国一人公司（OPC）调研报告》归纳的「校园孵化型」创业者——对 AI 工具接受度高、试错意愿强。\n· 校园孵化型创业者多为高校在校学生及应届毕业生，是五类 OPC 画像中门槛最低的一类。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-041","title":"上海戴雯倩：从一杯白水到外滩 FTC，把「一人公司」做成创业圈并出了书","category":"创业案例","date":"2026-08-03","source":"东方网","region":"上海","heat":76,"tags":["SoloNest","社群经营","田野调查","收费筛选"],"summary":"2024 年 6 月 14 日第一期研讨在人民广场来福士一楼咖啡馆举行，桌上杯子里都是白水。","content":"· 戴雯倩是 SoloNest 一人公司创业圈发起人、资深 OPC 实践者和观察者，有十年互联网教育品牌市场经验。\n· 2023 年底裸辞后经历两次挫折：求职无门（简历石沉大海）、创业失败（10 场路演一分钱未融到）。\n· 她上小红书搜索「一人公司」「OPC」「超级个体」「单干」，给 OPC 实践者发出「研讨会」邀约。\n· 2024 年 6 月 14 日，第一期研讨在人民广场来福士一楼咖啡馆举行，环境嘈杂，桌子上杯子里都是白水；现场仅一人有创业经历。\n· 做到第 5 场时发现信号，决定把研讨会作为产品来经营——从第 6 场开始收费，用收费筛选出多元、高质量且愿意真诚分享的一人公司。\n· SoloNest 中「Solo」指 Solo-preneur（单人创业者），「Nest」寓意构建互助成长的「巢穴」。","url":"https://nw.eastday.com/zq/zw/20260803/9c237f0d827f3bc95fe98a01a58427bf.html"},{"id":"opc-042","title":"24 岁研究生王心怡：48 小时打磨出 AI 打印桌宠，拿下黑客松金奖","category":"创业案例","date":"2026-06-20","source":"人民日报《AI 化身靠谱「合伙人」》","region":"杭州","heat":72,"tags":["黑客松","AI桌宠","游戏造物","在校生"],"summary":"对着小青蛙说一句「我刷手机停不下来了怎么办」，它便能自动「吐」出一张安慰纸条。","content":"· 王心怡是一名设计专业的在读研究生，24 岁时就成为「鸿鹄汇」社区的一名创业者。\n· 在杭州举办的环球「黑客松」大赛上，她用 48 小时打磨出「叽里呱呱」AI 打印桌宠，拿下「游戏造物」赛道的金奖。\n· 产品形态：对着这只小青蛙说一句话，它便能自动「吐」出一张安慰纸条。\n· 属于「内容创意型 / 校园孵化型」交叉画像，代表 OPC 创业者年轻化、创意驱动的一面。\n· 人民日报将这类创业者概括为「AI 化身靠谱合伙人」。","url":"https://so.html5.qq.com/page/real/search_news?docid=70000021_7956a012af430752"},{"id":"opc-043","title":"江苏梧桐 AI 何汕杉：平台日均访问 9 万人次，核心团队仅 1 人","category":"创业案例","date":"2026-01-28","source":"央视网","region":"江苏","heat":79,"tags":["就业服务","弹性协作网络","日均9万","单全职员工"],"summary":"核心团队仅有她一名「全职员工」，其余工作通过技术合作方、兼职者及实习生构成的弹性协作网络完成。","content":"· 江苏梧桐 AI 创始人何汕杉基于自研就业服务模型，设计了一个针对在校大学生群体的平台，提供岗位匹配、简历优化、AI 模拟面试等功能。\n· 2025 年下半年，平台访问量达日均 9 万人次，较上半年几乎翻倍。\n· 她的 OPC 核心团队仅有她一名「全职员工」，其余工作主要通过技术合作方、兼职者及实习生构成的弹性协作网络完成。\n· 央视网将「一人公司」定义为：通常由一位核心人物主导，依托 AI 智能体、少数辅助员工和外包协作。\n· 业内人士观察：掌握硬核科技的创客、拥有商业资源的大厂高管以及手握潜力项目的科学家，成为这场创业潮流的主角。","url":"https://ima.qq.com/wiki/?shareId=1b03b5c21aa5cce2e17395810a3e94a613c43e06a7b9df2597aa9e90ed3b6648"},{"id":"opc-044","title":"iPolloWork OPC 开放协作平台发布：连接模型、Agent、Skills 与 MCP","category":"生态工具","date":"2026-09-02","source":"央广网","region":"北京","heat":89,"tags":["iPolloWork","Harness接入层","多Agent协作","开源工作空间"],"summary":"推动 AI 从「回答问题」走向「参与工作、协同执行和完成交付」。","content":"· 2026 年 9 月 2 日，菠萝智云在 iPollo·2026 全球 OPC 开源协作大会上发布 iPolloWork OPC 开放协作平台。\n· 定位：面向 OPC 创业者和小型创新团队的开源 AI 工作空间。\n· 通过开放的 Harness 接入层，连接不同模型、Agent、Skills、MCP 服务和专业工具。\n· 在统一工作环境中完成目标理解、任务拆解、多 Agent 协作、工具调用和过程管理。\n· 能将复杂任务持续推进为代码、文档、演示、网站、设计、视频等可继续编辑、迭代和交付的成果。\n· 支持用户随时查看、干预和接管执行过程。","url":"https://so.html5.qq.com/page/real/search_news?docid=70000021_4046a9939a565852"},{"id":"opc-045","title":"OpenClaw（「龙虾」）爆发：GitHub 星标 20.7k，创始人加入 OpenAI","category":"生态工具","date":"2026-02-15","source":"百度百科 / 公开报道","region":"全球","heat":95,"tags":["OpenClaw","开源智能体","基金会","Peter Steinberger"],"summary":"从 Clawdbot 到 Moltbot 再到 OpenClaw，一款个人 AI 代理成为 2026 年 OPC 浪潮的技术底座。","content":"· 2026 年 1 月前身 Clawdbot 发布，GitHub 星标数迅速增长，至 1 月 26 日飙升至 20.7k；1 月 27 日因商标问题改名「Moltbot」，1 月 30 日更名为 OpenClaw。\n· 「Clawdbot 自主买车」「30 分钟代码大迁移」「40 小时深度调研」等视频、长文让这款 Agent 受到广泛关注。\n· 2026 年 2 月 15 日，OpenAI CEO Sam Altman 宣布 OpenClaw 创始人 Peter Steinberger 将加入 OpenAI，OpenClaw 以基金会形式作为开源项目存续，OpenAI 继续提供支持。\n· Altman：「未来将是高度多智能体的时代，而支持开源是我们实现这一目标的重要组成部分。」\n· 2026 年 4 月 4 日，Anthropic 宣布正式封杀 OpenClaw，生态格局随之变化。\n· 开发者 Peter Steinberger 曾开发文档处理工具 PSPDFKit，并于 2021 年出售相关公司。","url":"https://baike.baidu.com/item/OPC/67465443"},{"id":"opc-046","title":"腾讯 WorkBuddy、ClawPro 与「龙虾全国巡装」17 城","category":"生态工具","date":"2026-03-09","source":"百度百科 / 公开报道","region":"中国","heat":88,"tags":["WorkBuddy","ClawPro","免费部署","企微接入"],"summary":"腾讯云在深圳总部楼下摆摊免费部署 OpenClaw，排号超过 800 人。","content":"· 2026 年 3 月 6 日，腾讯云在深圳总部楼下摆摊免费部署 OpenClaw，排号超过 800 人；腾讯云智能体开发平台上线 OpenClaw 极速部署服务。\n· 3 月 9 日，腾讯版「小龙虾」WorkBuddy 正式上线；同日火山引擎上线开箱即用的云上 SaaS 版 OpenClaw——ArkClaw。\n· 3 月 9 日，企业微信支持接入 OpenClaw。\n· 4 月 2 日，腾讯云推出的企业版 OpenClaw——ClawPro 正式发布并开启公测。\n· 3 月 14 日，腾讯云宣布「龙虾」全国巡装启动，未来 40 天技术专家走遍深圳、上海、北京、广州、杭州、成都、武汉、重庆、长沙、西安、郑州、沈阳等 17 城。\n· 二手交易平台出现上门安装 OpenClaw 服务，上门安装收费多在 300 元至 666 元不等。","url":"https://baike.baidu.com/item/OPC/67465443"},{"id":"opc-047","title":"大厂「龙虾」全家桶：华为小艺 Claw、小米 miclaw、面壁 EdgeClaw Box","category":"生态工具","date":"2026-03-19","source":"百度百科 / 公开报道","region":"中国","heat":82,"tags":["小艺Claw","miclaw","EdgeClaw","端云协同"],"summary":"从手机到一体机，从鸿蒙到端云协同，国产 OpenClaw 生态在两周内密集落地。","content":"· 华为推出基于鸿蒙系统的小艺 Claw（beta），可帮助用户处理文档编辑、写 PPT、自动回复邮件等任务，支持多端协同。\n· 小米首款手机龙虾 Xiaomi miclaw 启动封测，搭载 MiMo 大模型，深度融合 OS 与人车家全生态。\n· 面壁智能发布龙虾智能硬件 EdgeClaw Box，并联合清华大学、OpenBMB 社区开源支持端云协同的升级版 EdgeClaw，已适配松果派、英伟达 DGX Spark、苹果 Mac Mini 等。\n· 阿里云手机版「龙虾」JVS Claw 上线 App Store 等应用商店；蚂蚁数科 DTClaw 开启内测，支持上百种专业 skills。\n· 中科可控推出业内首个国产龙虾盒子 M50，定位端云协同国产工作站；太初元碁发布太初龙虾一体机 TecoClaw。\n· 英伟达 CEO 黄仁勋表示，公司正将 OpenClaw 定位为用户与 AI 交互方式的重大演进，并推出面向企业的 NemoClaw 版本。","url":"https://baike.baidu.com/item/OPC/67465443"},{"id":"opc-048","title":"扬州江都「橙星漫创工厂」：7 分钟影视级成片，成本仅 50 元","category":"生态工具","date":"2026-07-20","source":"扬州市人民政府","region":"扬州","heat":83,"tags":["AI漫剧","八大智能体","零门槛","公共创作平台"],"summary":"「题材选定—画风定位—参数微调」三步操作，就能一键生成多风格漫剧。","content":"· 江都上线「橙星漫创工厂」一站式 AI 内容公共创作平台，整合八大协同智能体，面向园区 OPC 创业者、中小文创团队免费开放。\n· OPC 创业者无需掌握专业动画制作技能，只需完成「题材选定—画风定位—参数微调」三步操作，就能一键生成多风格漫剧。\n· 7 分钟完整影视级成片创作成本仅 50 元。\n· AI 漫剧综合制作成本降幅超 90%，生产周期以天、小时计算，适配抖音、快手、海外 TikTok 等全域传播渠道。\n· 江都多部原创作品全网热播，其中《我靠预判走向人生巅峰》上线三天播放量突破亿次。\n· 扬州云媒数字产业园 AI 漫剧 OPC 产业基地订单已排至 2027 年，整体签约订单总额突破亿元。","url":"https://yangzhou.gov.cn/xwzx/zwyw/art/2026/art_9f3c59e3b1134b8280d8157240affe31.html"},{"id":"opc-049","title":"杭州魔搭社区线下开发者中心与萧山「芯模社区」","category":"生态工具","date":"2026-04-16","source":"杭州日报 / 数投圈","region":"杭州","heat":70,"tags":["魔搭社区","芯模社区","微路演","信息墙"],"summary":"共享办公区的信息墙上钉着许多卡片，写满入驻者的真实需求：「想认识更多一人创业者」「找到 AI 合伙人」。","content":"· 杭州市西湖区「魔搭社区」线下开发者中心，开放式交流区域内定期举办微路演。\n· 共享办公区的信息墙上钉着许多卡片，写满入驻者的真实需求：「想认识更多一人创业者」「找到 AI 合伙人」「前沿 AI 交流」。\n· 萧山区「芯模社区」有西湖大学博士后团队在做具身机器人。\n· OPC 创业者陈晖：「对于一人公司的创业者来说，除了物理空间，社群文化和协作氛围能够帮助我们彼此之间重新建立个体连接，从而催生新的创造与商业机会。」\n· 「官方社区 + 民间社区」双轮驱动是杭州 OPC 生态的显著特征。","url":"https://ima.qq.com/wiki/?shareId=21324e54961e97b6c027d7d185a34450119f770bbef958b5224d9825335de6c1"},{"id":"opc-050","title":"鸿鹄汇《2026 一人公司洞察报告》：HACR = 1 : 72","category":"研究报告","date":"2026-04-10","source":"证券时报 / 鸿鹄汇 Honghub","region":"中国","heat":98,"tags":["HACR","1:72","75%非技术背景","数字办公租金"],"summary":"一人公司每投入 1 元 AI 成本，等效替代约 72 元开发人力支出；在杭州这一杠杆高达 91 倍。","content":"· 首次提出面向 OPC 的 AI 效能评估指标 HACR（Human-AI Cost Ratio，人机成本比），中国市场 2026 年基准值 1 : 72。\n· 杭州由于薪资水平更高，这一杠杆高达 91 倍——当地开发人才成本越高，AI 工具对等效人力成本的替代效率越显著。\n· 基于 1500 份问卷及 100 小时以上深度案例分析和访谈。\n· 非技术背景创始人占比 75%，运营背景（26%）与技术背景（25%）几乎持平；产品经理 17.5%、行业领域专家 16.1%、创作者/设计师 8.4%。\n· 即便在技术背景创始人中，已有 47.2% 将「行业认知」列为核心竞争力，而非技术专利壁垒。\n· 仅有 17.6% 受访者维持零 AI 工具支出，超过八成已进入付费阶段，20% 以上月均 AI 支出超过 200 美元；超过 57% 每天与 AI 协作时间超过 8 小时，报告将这笔支出定义为「数字办公租金」。\n· 时间分配高度集中于学习（79%）与产品开发（78%），超过半数坦言「如何寻找用户」是最大困惑。\n· 变现路径：44% 选择订阅制；52.4% 月收入仍在 1000 美元以内（产品验证阶段），37.1% 进入可持续运营区间，10.5% 月收入超过 10 万美元。","url":"https://stcn.com/article/detail/3734428.html"},{"id":"opc-051","title":"复旦《2026 年中国一人公司（OPC）调研报告》：五类画像与五大困境","category":"研究报告","date":"2026-07-23","source":"新华网 / 复旦大学新闻学院姚建华教授团队","region":"中国","heat":93,"tags":["五类画像","五大困境","从孤岛到群岛","106项政策"],"summary":"五类创业者：校园孵化型、企业经验转化型、科研技术驱动型、内容创意型、传统经营升级型。","content":"· 五类创业者画像：校园孵化型、企业经验转化型、科研技术驱动型、内容创意型、传统经营升级型，创业者以 90 后、00 后为主。\n· 核心逻辑：尽管 AI 工具降低了执行门槛，但真正决定创业方向与企业可持续性的，仍是超级个体的经验积累、专业能力与可触达的业务场景。\n· 五大现实困境：一是政策工具趋于同质化，部分物理空间面临闲置风险；二是技术工具未能替代经营能力，个体事务负担依然繁重；三是创业者持续面临全能压力挑战，工作与生活界限日益模糊；四是大模型使用成本逐渐显现，业务赛道易陷入同质化竞争；五是法律合规机制尚不完善，主要经营风险压向创业者。\n· 有创业者坦言感觉自己更像是「全能员工」而非「老板」；有超级个体反映算力成本可能占总成本的八成以上。\n· 破解路径：政府需从「给工位、重补贴」走向「给订单、建生态」，真正打通商业转化与风险缓冲的「最后一公里」。\n· 只有形成稳定的 OPC 生态支持体系，才能使 OPC 从「孤岛」走向「群岛」。","url":"https://www.news.cn/digital/20260723/b239027e765f49bb8e584e02d684ea6e/c.html"},{"id":"opc-052","title":"新华社《全国 OPC 发展观察报告（2026）》：整体存活率不到 10%","category":"研究报告","date":"2026-08-13","source":"科技日报 / 新华社中国经济信息社","region":"中国","heat":92,"tags":["存活率不到10%","认知偏差","同质化","30多个城市"],"summary":"超六成创业者对 OPC 模式存在认知偏差，整体存活率不到 10%，OPC 的「死亡率」已达 90%。","content":"· 目前全国已有 30 多个城市出台了 OPC 的专项政策。\n· 报告显示：不少地方扶持政策同质化严重，整体配套生态体系还不够健全，普遍存在重硬件投入、轻软件赋能、重资源投放、轻需求匹配等问题。\n· 超六成创业者对 OPC 模式存在认知偏差，整体存活率不到 10%。\n· 相关数据显示，目前 OPC 的「死亡率」已达 90%。\n· 专家归纳 OPC 五种「死法」：完美主义陷阱、工具瘾、伪需求自嗨、定价恐惧症、现金流断裂。\n· 梁桂提出 OPC 发展的「热带雨林五法则」：从「投资于物」转向「投资于人」，从「场地租赁」转向「场景开放」，从「现金补贴」式输血转向「算力券、模型券、语料券」式造血，从「孤岛创业」转向「社群协同」，从「鼓励登场」转向「补齐短板」。","url":"https://www.stdaily.com/web/gdxw/2026-08/13/content_563296.html"},{"id":"opc-053","title":"市监总局《中国 OPC 发展调研报告 2026》：92% 高盈利 OPC 深度应用 AI","category":"研究报告","date":"2026-03-15","source":"半月谈 / 国家市场监督管理总局课题组","region":"中国","heat":87,"tags":["92%高盈利","轻资产高智力","90后00后","新公司法"],"summary":"OPC 地域上集聚于长三角、珠三角、京津冀及中西部新兴产业城市，行业分布呈「轻资产、高智力、新业态」特点。","content":"· 我国 OPC 发展呈快速增长态势，地域上集聚于长三角、珠三角、京津冀及中西部新兴产业城市。\n· 行业分布呈现「轻资产、高智力、新业态」特点，创业者以 90 后、00 后为主。\n· 数据显示，92% 的高盈利「一人公司」深度应用 AI 工具，通过技术替代大幅压缩运营成本。\n· 「一人公司」无需支付员工薪酬，无需或仅支付少量场地租金，借助 AI 工具与云服务，每月运营成本可控制在数百元至数千元。\n· 2024 年 7 月 1 日开始实施的新公司法简化了「一人公司」的注册流程，降低了注册资本要求。\n· 江苏追觅科技孵化的「一人公司」业务单元，平均搭建时长仅 12 天，远快于传统企业的筹备周期。","url":"http://www.sd.xinhuanet.com/20260417/13da7ae6abb44b2a954d7db12d938a1f/c.html"},{"id":"opc-054","title":"中关村人才协会报告：全国 OPC 数量突破 1600 万，同比激增 47%","category":"研究报告","date":"2026-05-20","source":"星岛头条 / 中关村人才协会","region":"中国","heat":84,"tags":["1600万","同比47%","五大行业","新旧公司法"],"summary":"OPC 集中于数字内容创作、跨境电商、软件开发及咨询、设计与创意服务、法律财务咨询五大行业。","content":"· 《中国 OPC 发展趋势报告（2025-2030 年）》显示，截至 2025 年 6 月，全国 OPC 数量突破 1600 万，同比激增 47%。\n· 国家市监总局发展研究中心报告指出，此轮增长主要由 AI 技术成熟与新《公司法》落实推动。\n· OPC 集中于数字内容创作、跨境电商、软件开发及咨询、设计与创意服务、法律财务咨询 5 大行业，其中 90 后、00 后创业者占比极高。\n· 学者张琳：如今创业者与劳动者的界限日益模糊。\n· 社交平台上「裸辞 2 年，我搞成 10 间一人公司」等帖文获逾 3000 点赞，留言区尽是求教者。","url":"https://www.stheadline.com/realtime-china/3612192/OPC%E7%86%B1%E6%BD%AE"},{"id":"opc-055","title":"OPC 失败模式五分类：资金耗尽型占 45%","category":"研究报告","date":"2026-08-10","source":"百度百科 / 《2026 年中国 OPC 行业发展报告》","region":"中国","heat":81,"tags":["失败模式","45%资金耗尽","30%同质化","伪创业"],"summary":"2025-2026 年，90% 的 OPC 失败源于三个核心问题：没钱、没客户、没精力。","content":"· OPC 失败模式典型类型：资金耗尽型（45%）、同质化内卷型（30%）、能力透支崩溃型（15%）、合规爆雷型（7%）、生态依附危机型（3%）。\n· 《2026 年中国 OPC 行业发展报告》指出，2025-2026 年 90% 的 OPC 失败源于三个核心问题：没钱（现金流断裂）、没客户（营收无法持续）、没精力（单人能力透支）。\n· 这是单人创业的结构性困境，短期内难以改变。\n· 部分大企业将原本的正式岗位拆解、外包给 OPC，把薪酬福利、用工风险转移到个体身上，催生大量「伪创业」。\n· 市场出现明显的收入两极分化：少数顶尖 OPC 收获高额回报，大量普通从业者陷入低价厮杀，社会保障跟不上。","url":"https://baike.baidu.com/item/OPC/68572435"},{"id":"opc-056","title":"2026 全球 OPC 共创节：40 个项目同台路演，14 万元奖金池","category":"赛事活动","date":"2026-07-02","source":"央视网 / 中国国情","region":"北京","heat":93,"tags":["全球OPC共创节","黑客松","国家会议中心","AI-OPC生态共同体"],"summary":"以 Open（开放）、Partner（伙伴）、Create（创造）为核心理念，打造 AI 时代的「创造第一现场」。","content":"· 2026 年 7 月 2 日，作为 2026 全球数字经济大会重要同期活动，全球 OPC 共创节主论坛在北京国家会议中心举行。\n· 汇聚 40 多家初创公司、50 多位 OPC 创作者、50 多位行业嘉宾、28 家全国各地 OPC 社区，以及多家头部企业和创投机构。\n· 核心赛事「AI 超新星黑客松」从两千余份参赛作品中遴选出 35 个项目晋级总决赛，最终《Funloom AI 互动内容共创平台》摘得一等奖，《cutto 智能编导》与《Mira Light》获二等奖，另有三等奖 7 名、优胜奖 30 名，共同分享 14 万元总奖金池。\n· 组委会联合草诀歌 AI LABS、飞书、Workbuddy、ai798Lab 等数十家生态伙伴，开设 24 场分时段特色实操工坊。\n· 展区里智谱、腾讯云、百度智能云、月之暗面 Kimi 等头部企业带来最新大模型和智能体；来自 15 座城市的社区代表在展位前交换联系方式、策划跨城联动。\n· 「全球 AI-OPC 生态共同体」启动成员招募；北京数字经济 2026 年一季度增速达 9.3%，算力总规模达 7 万 P。","url":"https://city.news.cctv.com/2026/07/03/ARTIOb0mhm2ITfTS4hdNnLRD260703.shtml"},{"id":"opc-057","title":"ITEC2026 OPC 挑战赛：红杉中国、奇绩创坛现场评审","category":"赛事活动","date":"2026-07-05","source":"北京组工","region":"北京","heat":82,"tags":["ITEC","WaytoAGI","红杉中国","奇绩创坛"],"summary":"采用「闭门初选+公开路演」双层竞技模式，40 个优质项目晋级总决赛现场路演。","content":"· 赛事由 WaytoAGI、Datawhale 等头部 OPC 生态伙伴及红杉中国、奇绩创坛等一线头部创投机构全程参与项目选拔、现场评审。\n· 征集项目覆盖 AI 开发工具、企业智能应用、硬件机器人、AIGC 内容创作四大热门方向。\n· 创始团队核心成员多毕业于海内外顶尖高校，或从业于行业头部科技企业；不少项目已实现市场化落地并获得知名创投机构投资。\n· 最终「FunloomAI 互动内容共创平台」获一等奖，「cutto 智能编导」和「Mira Light」获二等奖，「AInvestor｜创业投资分析 Agent 工作站」等 7 个项目获三等奖，另评出优胜奖 30 名。\n· 获奖项目有机会直通 10 月底举办的 ITEC2026 全球总决赛，享受赛事奖金、朝阳全链条产业政策、专属孵化空间、奖投贷联动金融服务等。","url":"https://www.bjdj.gov.cn/article/3000211596.html"},{"id":"opc-058","title":"HICOOL 2026 启动「全球 OPC 支持计划」，面向 5800 万一人公司","category":"赛事活动","date":"2026-09-01","source":"搜狐 / OPC 雷达","region":"北京","heat":80,"tags":["HICOOL","5800万","五大行动","出海对接"],"summary":"通过五大行动提供从发现、社群、培训、出海、对接到政策的完整支持链条。","content":"· HICOOL 2026 全球创业者峰会上，全球 OPC 支持计划同步启动。\n· 面向全球 5800 万「一人公司」创业者，通过五大行动提供从发现、社群、培训、出海、对接到政策的完整支持链条。\n· 这是国内首个面向全球 OPC 群体的大规模支持计划，标志着 OPC 从区域政策竞赛走向全球资源链接。\n· 同期，HICOOL 平台持续为创业者提供展示、融资与产业对接机会。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-059","title":"WAIC Future Tech OPC 独立先锋挑战赛与徐汇八大 OPC 社区","category":"赛事活动","date":"2026-07-07","source":"上海市徐汇区人民政府","region":"上海","heat":77,"tags":["WAIC","独立先锋挑战赛","基金矩阵900亿","GitStudy"],"summary":"徐汇资本累计认缴超 90 亿元，形成基金矩阵超 900 亿元，累计投资 126 家企业、投资额约 20 亿元。","content":"· 徐汇八大 OPC 社区亮相，为「一人公司」提供算力、场地保障、金融服务和供应链对接等「高阶版创业基础设施」。\n· 徐汇资本自 2021 年成立以来累计认缴超 90 亿元，形成基金矩阵超 900 亿元；截至 2026 年 4 月底累计投资 126 家企业，投资额约 20 亿元。\n· 种子期、天使轮项目包含人工智能青年创业基金、科孵基金，前者聚焦 35 岁以下青年创业，单笔投资不超过 200 万元，已投决项目达 80 笔。\n· 案例：GitStudy 团队作为「WAIC Future Tech OPC 独立先锋挑战赛」江浙赛区（南通赛区）冠军，将在 WAIC 期间通过展台路演与嘉宾、创业者交流。\n· 2026 年徐汇资本重点关注 AI 产业链、软硬一体终端及具身智能、未来产业三大领域。","url":"https://www.xuhui.gov.cn/xwzx_bmlf/20260707/574979.html"},{"id":"opc-060","title":"广东「众创杯」创业大赛首设人工智能 OPC 专项赛道","category":"赛事活动","date":"2026-06-25","source":"百度百科 / 广东省人社厅","region":"广东","heat":71,"tags":["众创杯","专项赛道","省级赛事","政策配套"],"summary":"省级创业大赛首次为 OPC 单独设赛道，是 OPC 从政策扶持走向赛事认定的标志性动作。","content":"· 广东省「众创杯」创业大赛首次设立人工智能 OPC 专项赛道。\n· 这一动作标志着 OPC 已从「政策扶持对象」升级为「赛事认定对象」，进入主流创业竞赛体系。\n· 与广东省级 OPC 三年行动方案形成配套——到 2028 年建成百个生态社区、集聚万名创新创业人才。\n· 赛事成为 OPC 对接资本与产业链的低成本窗口，建议有可演示产品的 OPC 提前准备 pitch。","url":"https://baike.baidu.com/item/OPC%E5%88%9B%E4%B8%9A%E7%A4%BE%E5%8C%BA/68619288"},{"id":"opc-061","title":"2026 开源创新生态大会：开放原子紫金专区 OPC 项目孵化中心揭牌","category":"赛事活动","date":"2026-08-28","source":"搜狐 / 2026 开源创新生态大会","region":"苏州","heat":76,"tags":["开源创新","开放原子","16家签约","双中心联动"],"summary":"16 家首批入驻项目集中签约，覆盖 AI 大模型、具身智能、医疗科技等赛道。","content":"· 2026 年 8 月 28 日，2026 开源创新生态大会在苏州举办。\n· 大会现场，开放原子紫金专区 OPC 项目孵化中心揭牌，16 家首批入驻项目集中签约。\n· 签约项目覆盖 AI 大模型、具身智能、医疗科技等赛道。\n· 大会发布 OPC 孵化行动计划，以「苏州吴中+南京雨花」双中心联动发展模式，打造全国首个人工智能 OPC 专业开源孵化社区。\n· 苏州市吴中区委书记万利表示，吴中区正全力打造「机器人+人工智能」产业地标，布局 20 余个 OPC 社区。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-062","title":"专家热议 OPC「生存法则」：五种死法与热带雨林五法则","category":"风险观察","date":"2026-08-13","source":"科技日报","region":"中国","heat":90,"tags":["五种死法","热带雨林五法则","AI法律风险","法人人格混同"],"summary":"「先赚钱，再追求完美。AI 是员工，而你是 CEO。一人创业，不等于一人战斗，加入社区是 OPC 生存的刚需。」","content":"· OPC 虽火爆，但发展并非一路坦途，不到一年就从一个创业热词变成了一场城市间的政策竞赛。\n· 五种「死法」：完美主义陷阱、工具瘾、伪需求自嗨、定价恐惧症、现金流断裂。\n· 王江平认为，OPC 的发展中存在 AI 法律风险放大、法人人格混同、责任界定、数据合规、知识产权归属等问题，监管层面的规则不统一、合规体系不健全。\n· 呼吁国家和相关部门加快建立适配人工智能时代的法律规范，明确责任边界，完善知识产权保护机制。\n· 梁桂送给 OPC 创业者三句话：「先赚钱，再追求完美。AI 是员工，而你是 CEO。一人创业，不等于一人战斗，加入社区是 OPC 生存的刚需。」\n· 「热带雨林五法则」：投资于人、场景开放、券式造血、社群协同、补齐短板。","url":"https://www.stdaily.com/web/gdxw/2026-08/13/content_563296.html"},{"id":"opc-063","title":"OPC 热潮的「冷思考」：三年存活率不足 50%","category":"风险观察","date":"2026-08-30","source":"中国工业新闻网 / 中国工经联","region":"中国","heat":85,"tags":["三年存活率","政策碎片化","扶上马送一程","标准缺位"],"summary":"政策「扶上马」的多，「送一程」的少；给钱给补贴的多，给能力给生态的少。","content":"· 相当比例的 OPC 在注册后一年内即陷入停滞或注销，大量「一人公司」实际处于「一人生意」甚至「一人空壳」状态。\n· 市场监管总局抽样调研显示，一人公司的平均生命周期明显短于多股东公司，三年存活率不足 50%。\n· 部分地区出现「注册容易注销难」「政策优惠引流而来、政策退坡即走」的现象。\n· 矛盾之二：政策扶持碎片化与系统性赋能缺失——多集中在注册便利化、一次性创业补贴、小额担保贷款、社保补贴等「入口端」措施，对订单从哪里来、供应链怎么解决、品质如何保障、品牌如何建设缺乏体系化解决方案。\n· 矛盾之三：地方探索各自为战与标准规范缺位——缺乏统一的概念界定、统计口径、服务标准和评价体系。\n· 中国工经联提出「龙翔 OPC 生态谷」体系化建设方案，将 OPC 定位为产业链供应链韧性的「毛细血管网」与创新要素流动的「活性载体」。","url":"https://www.cinn.cn/yw/2026/08-30/Qr2wZY8D.html"},{"id":"opc-064","title":"破解全球 OPC 治理之困：责任边界、数字资产与合规门槛","category":"风险观察","date":"2026-08-31","source":"新华网《环球》杂志","region":"全球","heat":83,"tags":["GDPR","责任边界","数字资产归属","欧洲实践"],"summary":"「一些 OPC 创业者往往是技术天才，但同时也是财务、法律、网信合规小白。」","content":"· 挑战：企业责任与个人责任之间边界模糊、数字资产归属悬而未决、单枪匹马的个人商业信任度低、经营风险向个体转移。\n· 在欧洲，没有专门叫「OPC」的政策名词，但大量独立有限个体公司、自由科技开发者、单人咨询事务所本质就是 AI 时代的 OPC。\n· 德国大量工业领域独立技术顾问、英国 AI 独立开发者、意大利设计行业单人工作室，构成欧洲版的 OPC 群体。\n· 欧盟 2018 年推出 GDPR，其严苛的数据保护法规给单人创业者设置了极高的合规门槛；开源模型商用版权、AI 生成内容著作权纠纷已成为欧洲科创圈越来越高频的纠纷。\n· 不同于大型企业拥有层层风控审核体系，OPC 几乎没有内部纠错机制。\n· 工业和信息化部科技服务业标准化技术委员会委员华中伟：「一些 OPC 创业者往往是技术天才，但同时也是财务、法律、网信合规小白。」","url":"https://www.news.cn/globe/20260831/ae3192aa12dc4e7ea1391b423033137b/c.html"},{"id":"opc-065","title":"人民网：一人公司是数字时代创业新动向，但需正视困境短板","category":"风险观察","date":"2026-09-09","source":"人民网财经频道","region":"中国","heat":89,"tags":["信息困境","决策困境","空壳化","注册即补贴"],"summary":"部分社区出现「重数量、轻质量」倾向，盲目追求社区规模，存在「空壳化」隐忧。","content":"· 信息困境：市场和技术瞬息万变，在缺乏专业化分工体系的架构下，如何构建全面的信息流、避免个人偏见，对创业者的信息获取和分析能力提出极高要求。\n· 决策困境：一人公司的决策成本、创业方向选择和战略规划等均由创业者独自承担，个人决策能力至关重要。\n· 政策同质化：支持政策多集中在场地租金减免、算力补贴、注册便利等基础层面，未能充分结合各地产业优势与资源禀赋形成差异化发展路径。\n· 「空壳化」隐忧：部分社区出现「重数量、轻质量」倾向，盲目追求社区规模，却缺乏完善的创业服务、产业配套和资源对接。\n· 行业乱象：部分园区成为「政策搬运工」，帮创业者包装材料、申请补贴、对接返税，甚至形成「注册即补贴」的闭环，存在注册空壳公司套利的投机倾向。\n· 不少自媒体刻意渲染依靠 AI 工具即可轻松「躺赚」的论调，误导大众对 OPC 形成认知偏差。","url":"https://finance.people.com.cn/BIG5/n1/2026/0909/c1004-40795064.html"},{"id":"opc-066","title":"学者张琳：OPC 良莠不齐，「很多 OPC 就是一个 YouTuber 或小红书账号」","category":"风险观察","date":"2026-08-20","source":"星岛头条","region":"中国","heat":78,"tags":["张琳","政策运动","鱼龙混杂","阶层流动"],"summary":"OPC 仍处于发展早期，更像一场自上而下推行的商业运动，个体创业神话的底色并未如想像中颠覆。","content":"· 美国新罕布什尔大学副教授张琳长期追踪中国数字经济，她认为 OPC 仍处于发展早期，更像一场自上而下推行的商业运动。\n· 「很多 OPC 就是一个 YouTuber 或者小红书账号。」她 7 月初考察深圳高新园，接触的 OPC 涉及播客媒体、金融投资、跨境电商，坦言有点「鱼龙混杂」。\n· 「他们更多是在原有赛道用 AI 提效，但整个商业形态并没有革命性的改变。」\n· 在她看来，OPC 浪潮类似 2015 年兴起的「大众创业 万众创新」——「是一场政策自上而下推动的商业运动」。\n· 「OPC 有可能成长成为类似（双创）的东西。因为它的口袋够大，能装很多，又顺应了很多年轻人逃离大厂、厌倦 996、想自己做点甚么的心态，恰好又有很多闲置地产。」\n· 「越来越多创业者觉得自己只是打工人」，社会阶层流动性降低，风险已成常态。","url":"https://www.stheadline.com/realtime-china/3612192/OPC%E7%86%B1%E6%BD%AE"},{"id":"opc-067","title":"合规红线：一人公司公私账户混用被判股东承担连带责任","category":"风险观察","date":"2026-03-15","source":"百度百科 / 司法案例","region":"广州","heat":86,"tags":["财产混同","连带责任","数据合规","合规成本"],"summary":"2026 年 3 月广州某 OPC 因存在公私账户混用等问题，被法院判决股东对公司全部债务承担连带责任。","content":"· 一人公司股权结构单一，缺乏内部制衡机制，易出现「财产混同」风险。\n· 2026 年 3 月广州某 OPC 因存在公私账户混用等问题，被法院判决股东对公司全部债务承担连带责任。\n· 融资层面，银行贷款仍是 OPC 的首要选择，然而轻资产科技公司往往缺乏抵押物，仅靠个人征信难以支撑大额授信。\n· 合规与法律风险突出：2026 年《中华人民共和国数据安全法》进一步完善实施后，OPC 的数据合规成本平均增加 20%-30%；需按时完成工商年报、税务申报、年度审计、股东 KYC 等多项繁琐合规义务。\n· AI 生成物的知识产权归属处于制度真空状态，相关确权、维护及试错成本均由创业者独自背负。\n· 78% 的创业者缺乏合规管理相关经验，65% 不具备系统的获客能力，存在单人能力全面不足的问题。","url":"https://baike.baidu.com/item/OPC/68572435"},{"id":"opc-068","title":"全球 OPC 图景：美国千万级无雇员企业、印度法律框架、欧洲独立开发者","category":"全球视野","date":"2026-08-31","source":"新华网《环球》杂志","region":"全球","heat":84,"tags":["美国无雇员企业","印度OPC框架","欧洲自由开发者","全球现象"],"summary":"从美国千万级规模的无雇员企业，到印度历经十余年打磨的 OPC 法律框架，OPC 已成为席卷全球的创业新现象。","content":"· 美国：千万级规模的无雇员企业（nonemployer firms），是 OPC 最成熟的市场形态。\n· 印度：历经十余年打磨的 OPC 法律框架，是少数在国家公司法层面为「一人公司」单独立法的经济体。\n· 中国：遍地开花的 OPC 创业社区，从 426 个社区到 106 项专项政策。\n· 欧洲：大量独立技术开发者、自由技术服务商的兴起，构成欧洲版的 OPC 群体。\n· 共同挑战：企业责任与个人责任之间边界模糊、数字资产归属悬而未决、单枪匹马的个人商业信任度低、经营风险向个体转移。\n· 拥抱 OPC 创新红利的同时，如何搭建兼顾活力与安全的制度环境，已成为一道绕不开的时代命题。","url":"https://www.news.cn/globe/20260831/ae3192aa12dc4e7ea1391b423033137b/c.html"},{"id":"opc-069","title":"AI 短剧 / 漫剧出海：海外规模预计突破 40 亿美金，OPC 单人出海成趋势","category":"全球视野","date":"2026-09-01","source":"界面新闻 / DataEye 研究院","region":"全球","heat":91,"tags":["AI漫剧","短剧出海","40亿美金","本土化适配"],"summary":"2026 年 6 月海外每月上新短剧数已突破 3.8 万部，OPC 单人出海模式将迎来规模化普及。","content":"· 海外 AI 漫剧、短剧规模预计突破 40 亿美金，本地化适配或成短剧出海标配。\n· 数据显示，2026 年 6 月海外每月上新短剧数已突破 3.8 万部。\n· 研判一：门槛持续降低，预计大量 OPC 走向出海——以专业 AI 短剧出海工具将剧本本土化改写、多语种翻译适配等能力封装，单人创作者即可完成从剧本打磨到成片输出、平台上架的全链路操作。\n· 研判二：AI 廉价感仍是行业巨坑，但有望半年内得到改善；欧美调研显示 13–17 岁青少年对 AI 影像天然包容。\n· 行业「易入局、难出圈」的特征将愈发明显，本土化运营思维成为区分普通玩家与优质玩家的核心分水岭。\n· 赛道参与主体从传统大型内容厂商，逐步拓展为「大厂+工作室+单人创作者」的多元化格局。","url":"https://www.jiemian.com/article/14955244.html"},{"id":"opc-070","title":"灵矩动漫王树波：日均上线 1300 部，爆款率不足千分之一","category":"全球视野","date":"2026-09-01","source":"腾讯新闻 / 对话灵矩动漫创始人","region":"全球","heat":82,"tags":["AI漫剧内卷","分发效率","IAA/IAP","OPC依赖大公司"],"summary":"「酒香不怕巷子深在未来不成立。没有好的分发方式和分发效率，好内容也没人看。」","content":"· 出海梯队格局：「大公司先上，中小团队紧跟其后，OPC 依赖大公司拓出来的资源和生态。」\n· OPC 在国内没有门槛，做好上传就行、平台给流量；但海外有私域概念，需要建立自己的流量池或产品矩阵，OPC 没有这个能力。\n· 灵矩出海打法两个层面：海外社媒矩阵（FB、TikTok、YouTube 大量账号）+ APP 矩阵（IAP 付费 / IAA 免费两种模式）。\n· 海外 IAP 是主流、IAA 占少数，跟国内正好相反；海外用户还处于教化阶段，大概还需 1 到 1.5 年才会逆转。\n· 出海竞争的核心正从「买量效率」转向「分发效率」——比谁能用更低成本、更精准的方式把内容送进目标用户的屏幕。\n· 「稍微降低精品率，一天自动化生产一两百部剧都不是问题」——当内容供给趋近无限，稀缺的不再是生产能力，而是分发能力。","url":"https://new.qq.com/rain/a/20260901A080NS00"},{"id":"opc-071","title":"国际传播视角：AI 驱动的「一人公司」掀起中国创业新热潮","category":"全球视野","date":"2026-04-02","source":"国务院新闻办公室英文网","region":"全球","heat":74,"tags":["国际传播","Solos","长三角珠三角","新公司法"],"summary":"「以『一人+AI』为核心的 OPC 模式，正成为数字经济与创新创业深度融合的新前沿。」","content":"· 2026 年春节后，郑海峰在山东青岛创办数字文化创意内容公司，是这波浪潮的一个缩影。\n· 全国 OPC 发展调研报告显示，OPC 集中于长三角、珠三角、京津冀以及中西部新兴工业城市，创始者以 90 后、00 后为主。\n· 山东大学经济学院副教授刘一鸣认为，这波增长是技术、政策、市场三因素交汇的结果。\n· 2024 年 7 月 1 日生效的修订版《公司法》简化了注册流程、降低了资本要求，让个人创业更容易。\n· 山东济南李马辉 2025 年营业额达 700 万元；江苏追觅科技孵化的 OPC 业务单元平均搭建时长仅 12 天。\n· 刘一鸣：「通过争夺这些『一人公司』，城市实际上是在争夺下一波创新动能和人才资源。」","url":"https://english.scio.gov.cn/chinavoices/2026-04/02/content_118416270.html"},{"id":"opc-072","title":"OPC 被写入多地「十五五」规划，区域竞争转向「细胞级」赛道","category":"趋势观察","date":"2026-05-15","source":"国家发展和改革委员会","region":"中国","heat":95,"tags":["十五五规划","细胞级培育","上海江苏","超20城政策"],"summary":"过去区域产业竞争多聚焦引进大型「巨无霸」项目，如今 OPC 提供了高性价比的新路径——聚焦「细胞级」培育。","content":"· 截至 2026 年 4 月，全国已有超 20 个城市密集出台 OPC 专项扶持政策，OPC 社区在一线城市密集涌现。\n· 上海市「十五五」规划《纲要》明确提到，打造一人公司（OPC）创新创业生态。\n· 江苏省「十五五」规划《纲要》指出，大力推广 OPC 创新创业模式，支持苏州等地打造 OPC 创业城市、Token 活力之城，鼓励有条件的地区建设 OPC 社区、园区，并以专栏形式部署人工智能 OPC 培育发展行动。\n· 区域竞争转向「细胞级」赛道：不追求立刻长出参天大树，而是先培育一片能让花草自由生长的土壤。\n· 从北京海淀、上海临港到深圳龙岗，从长三角城市群到粤港澳大湾区，一场围绕超级个体培育的区域竞争已悄然升温。\n· 中国科学院院士、上海交通大学讲席教授丁洪：「一人公司不是短期风口，而是社会分工和经济活动单元形态发生巨变的长期趋势。」","url":"https://www.ndrc.gov.cn/wsdwhfz/202605/t20260515_1405211.html"},{"id":"opc-073","title":"OPC 生态加速分化：从「通用型」到「场景垂直型」","category":"趋势观察","date":"2026-09-01","source":"搜狐 / 2026 年 9 月首期 OPC 雷达","region":"中国","heat":88,"tags":["场景垂直","科幻IP社区","文旅社区","开源孵化"],"summary":"9 月首期 OPC 雷达显示，OPC 赛道正在经历从「通用型」到「场景垂直型」的加速分化。","content":"· 苏州布局 20 余个 OPC 社区并发布全国首个省级开源社区孵化计划。\n· 成都落地全国首个「科幻 IP+AI」OPC 社区，首期 2500 平方米。\n· 合肥首个文旅 OPC 社区在庐江揭牌，把轻量化创业模式搬进乡野。\n· HICOOL 2026 启动面向全球 5800 万「一人公司」的 OPC 支持计划。\n· 杭州拱墅推出「运河启源 AI STORE 平台」，以 Token 券为核心政策工具。\n· 贵阳 00 后用 AI 开一人公司，已服务近 500 名客户、累计上万客单，每月总开支两三千元、AI 调用费用仅百余元。","url":"https://www.sohu.com/a/1071037435_122851571"},{"id":"opc-074","title":"南宁首批 10 个人工智能 OPC 创业社区集中开放","category":"趋势观察","date":"2026-05-28","source":"百度百科 / 南宁市人民政府","region":"南宁","heat":70,"tags":["南宁","首批10个","单人+AI+平台","边疆延伸"],"summary":"聚焦「单人+AI+平台」轻量化创业模式，OPC 社区建设开始向县域、边疆地区延伸。\n","content":"· 2026 年 5 月，广西南宁市首批 10 个人工智能 OPC 创业社区集中开放。\n· 聚焦「单人+AI+平台」轻量化创业模式。\n· 同期，江西南昌海淘云 AIGC/OPC 孵化产业园发布。\n· OPC 社区建设在东部沿海高密度集聚的同时，开始向县域、边疆地区延伸。\n· 全国 426 个 OPC 社区中，中部 52 个、西部 31 个、东北 8 个，区域梯度正在被政策力量逐步拉平。","url":"https://baike.baidu.com/item/OPC%E5%88%9B%E4%B8%9A%E7%A4%BE%E5%8C%BA/68619288"},{"id":"opc-075","title":"特色 OPC 探索：北京丰台「青橙计划」与宜兴「AI+手工艺」基地","category":"趋势观察","date":"2026-08-31","source":"新华网《环球》杂志","region":"中国","heat":72,"tags":["青橙计划","AI+手工艺","非遗","大学生OPC"],"summary":"北京丰台区联动阿里天猫校园推出「青橙计划」，把电商供应链、AI 工具向青年 OPC 开放。","content":"· 杭州推出 OPC 专项政策，推行工位注册、一址多照，探索沙盒监管，为信用良好的 OPC 推行「无事不扰」。\n· 武汉布局 15 个 OPC 社区，打造「楼上研发、楼下生产」硅巷形态。\n· 北京丰台区联动阿里天猫校园推出「青橙计划」，搭建大学生 OPC 创业实践基地，把电商供应链、AI 工具向青年 OPC 开放。\n· 宜兴丁蜀镇打造「AI+手工艺」特色 OPC 基地，把非遗产业与 OPC 创业结合起来。\n· 苏州独墅湖青创港提出构建「高校-政府-企业」三类 OPC 社区接力计划：高校承担创新教育，政府承接创业实践，企业完成市场引领。","url":"https://www.xinhuanet.com/globe/20260831/89d03f0573a148f79943fc444cdaad2f/c.html"},{"id":"opc-076","title":"贵阳科学城「梦源 AI 引擎」：20 余家 OPC 签约落户","category":"趋势观察","date":"2026-07-27","source":"贵阳市大数据发展管理局","region":"贵阳","heat":73,"tags":["梦源AI引擎","低成本算力","AI代码生成","陪跑服务"],"summary":"入驻社区主体可低成本调用高清算力、AI 代码生成、智能素材制作等商用工具，大幅压缩研发和运营成本。","content":"· 贵州科学城管理有限责任公司业务负责人何从跃介绍，入驻社区主体可依托「梦源 AI 引擎」智能模型，低成本调用高清算力、AI 代码生成、智能素材制作等商用工具。\n· 目前已有 20 余家 OPC 企业签约落户。\n· 社区平台帮助对接客户、洽谈订单并提供全程陪跑服务，解决「一个人在家创业，接单渠道有限」的痛点。\n· 贵州数字文创领域涌现一批独立开发者：肖生华依托 AI 美术建模、剧情脚本生成、音效制作工具独立完成游戏研发上线；彭勃依托全流程 AI 创作工具链独立打造原创游戏《七曜》。\n· 「AI 极大降低了普通人进入文创、游戏开发领域的门槛。」","url":"https://dsjj.guiyang.gov.cn/newsite/xwdt/xyzx/202607/t20260727_90665652.html"},{"id":"opc-077","title":"OPC 的法律定位：独立法人主体，区别于个体工商户","category":"趋势观察","date":"2026-05-15","source":"国家发展和改革委员会 / 环球杂志","region":"中国","heat":79,"tags":["独立法人","有限责任","公司法","资产传承"],"summary":"OPC 依据公司法登记设立，股东以认缴出资为限承担有限责任；个体工商户不具备法人资格，承担无限连带责任。","content":"· 从法律属性看，OPC 并非传统作坊式个体经营，而是依据公司法登记设立的独立法人主体。\n· 股东以认缴出资为限承担有限责任，享有独立法人财产权；而个体工商户归属于自然人范畴，不具备法人资格，不能设立分支机构，经营者需以个人或家庭全部财产承担无限连带责任。\n· 清华大学中国发展规划研究院常务副院长董煜：「OPC 与个体工商户在法律形式上最大的不同在于前者是独立法人，后者不是。」\n· 艾媒咨询 CEO 张毅：相比个体户和自由职业者，OPC 的核心差异在于具备法人主体的商业信用，有可沉淀的资产，而且其资产还有传承的属性，可大可小。\n· 更重要的是，OPC 正在反向改造孵化器——各地新兴的 OPC 社区不再是传统「孵化空间」，而是轻量型总部集群：共享工位即办公室，按需采购法务财税，线上协作取代线下会议。","url":"https://www.ndrc.gov.cn/wsdwhfz/202605/t20260515_1405211.html"},{"id":"opc-078","title":"「AI 只是放大器，不是发动机」——OPC 社区的共识转向","category":"趋势观察","date":"2026-08-25","source":"社区情报聚合 / 一人公司观察","region":"中国","heat":77,"tags":["放大器","被替代焦虑","创意IP保护","Token价格战"],"summary":"大模型 Token 价格战持续压低 OPC 运营成本，但免费化同时稀释执行端溢价、加剧内卷。","content":"· 2026 年 8 月下旬进入 AI 路演/峰会密集期（8-20 广州领头羊 AI 专场、8-27 香港 GIS 投融资路演与深圳 AGIC 硬件路演），是一人公司对接资本与产业链的低成本窗口。\n· 大模型 Token 价格战仍在升温（Anthropic 保价、OpenAI/国产降价、腾讯 Hy3 免费至 8-31），持续压低 OPC 运营成本。\n· 但免费化同时稀释执行端溢价、加剧内卷——社区已从「狂欢」转向讨论「被替代焦虑」与「创意 IP 保护」（如 AI 两小时山寨未发布创意）。\n· 核心共识：「AI 只是放大器、不是发动机」——技术工具不能替代经营能力与商业判断。\n· 对准备注册一人公司的广东青年，省就业创业补贴清单、滨海湾 OPC Token 券等政策最具直接落地价值。","url":"https://ima.qq.com/wiki/?shareId=29cf1078858690bdb6dca1b26fd372cf41d5e1aebc4663404f1d0ff6d886b195"},{"id":"opc-079","title":"绍兴上虞 e 游小镇：浙江首个文化「新三样」垂类 OPC 产业社区","category":"趋势观察","date":"2026-07-15","source":"绍兴日报","region":"绍兴","heat":68,"tags":["文化新三样","出海分发","十人以下团队","AI微短剧"],"summary":"哪怕单人小型团队，也能独立完成内容创作、海外分发、海外客户运营的完整业务链条。","content":"· 2026 年 3 月，e 游小镇正式发布光合 e 游·文化「新三样」AI 内容 OPC 产业社区，是浙江省首个聚焦文化「新三样」领域的垂类 OPC 社区。\n· 文创企业能依托全套 AI 生产工具大幅降低出海创业门槛，哪怕单人小型团队，也能独立完成内容创作、海外分发、海外客户运营的完整业务链条。\n· 2026 年 6 月，白泽文化打造一站式出海分发平台，可 3 分钟快速创建跨平台广告，2 至 12 小时完成内容在线审核，成功入选全省文化领域「小切口」改革试点。\n· 十人以内的小型创作团队是绍兴 AI 微短剧行业的主流创业模式。\n· 「干饭文化」今年已推出 7 部完整 AI 漫剧，《气哭反派大小姐，让你不要惹主角》《蛇仙：开局吞噬仙帝》分别拿下红果平台 3284 万、3492 万热度。","url":"http://epaper.shaoxing.com.cn/sxrb/pc/content/202607/15/content_654293.html"},{"id":"opc-080","title":"OPC 漫剧出海实操：工具选型、GEO 优化与独立站运营","category":"趋势观察","date":"2026-08-15","source":"博客园 / 实战指南","region":"全球","heat":69,"tags":["GEO优化","品牌资产库","数据信息港","广告分账"],"summary":"豆包、Kimi、DeepSeek 等 AI 搜索工具已成为大量用户获取内容推荐的入口，IP 在 AI 搜索中的提及率直接决定长期曝光。","content":"· 工具选型：适配性好的 AI 工作台可动态路由请求到对应场景表现更优的模型，且在模型升级时完成无缝切换，避免模型锁定困境。\n· 品牌资产库：支持角色设定、色调模板、专属字体等存储，让每次生成都自动对齐品牌调性；创作数据可沉淀在本地或私有云（数据信息港），确保创作者掌握数据主权。\n· GEO（生成式引擎优化）：豆包、Kimi、DeepSeek 等 AI 搜索工具已成为大量用户获取内容推荐的入口，IP 在 AI 搜索中的提及率和被引用率直接决定长期曝光量。\n· 广告分账：主流合作平台包括 YouTube 合作伙伴计划、Google AdSense，普遍按千次展示或点击量结算；工具接入广告平台 API 可自动汇总分账数据。\n· 实战流程：IP 选型与脚本生成 → 角色设计与视觉标准化 → 多语种配音与字幕 → 视频剪辑与动效优化 → 分发与独立站导流。","url":"https://www.cnblogs.com/huanyushuchuang/articles/22632736"}]};
+
+var CAT_COLOR = {
+  "政策动向":"#22d3ee",
+  "社区落地":"#a78bfa",
+  "创业案例":"#34d399",
+  "生态工具":"#60a5fa",
+  "研究报告":"#fbbf24",
+  "赛事活动":"#fb7185",
+  "风险观察":"#fb923c",
+  "全球视野":"#2dd4bf",
+  "趋势观察":"#818cf8"
+};
+function catColor(c){ return CAT_COLOR[c] || "#60a5fa"; }
+
+var DATA = EMBEDDED;
+var state = { q:"", cat:"全部", sort:"heat", view:"grid", list:[] };
+
+/* ---------- 工具 ---------- */
+function $(s,r){ return (r||document).querySelector(s); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(m){
+  return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[m]; }); }
+function fmtDate(d){
+  if(!d) return "—";
+  var p = String(d).split("-");
+  return p.length>=3 ? (p[0]+"."+p[1]+"."+p[2]) : d;
+}
+
+/* ---------- 渲染 KPI ---------- */
+function renderKpis(){
+  var items = DATA.items;
+  var cats = {}; items.forEach(function(i){ cats[i.category]=1; });
+  var regs = {}; items.forEach(function(i){ regs[i.region]=1; });
+  var pol  = items.filter(function(i){ return i.category==="政策动向"; }).length;
+  var com  = items.filter(function(i){ return i.category==="社区落地"; }).length;
+  var avg  = Math.round(items.reduce(function(a,b){ return a+(b.heat||0); },0)/items.length);
+  var k = [
+    { n: items.length, l: "情报条目" },
+    { n: Object.keys(cats).length, l: "覆盖分类" },
+    { n: Object.keys(regs).length, l: "覆盖地区" },
+    { n: pol, l: "政策动向" },
+    { n: com, l: "社区落地" },
+    { n: avg, l: "平均热度" }
+  ];
+  $("#kpis").innerHTML = k.map(function(x){
+    return '<div class="kpi"><div class="num" data-n="'+x.n+'">0</div><div class="lbl">'+x.l+'</div></div>';
+  }).join("");
+  document.querySelectorAll(".kpi .num").forEach(function(el){
+    var target = +el.dataset.n, cur = 0, step = Math.max(1, Math.ceil(target/34));
+    var t = setInterval(function(){
+      cur += step;
+      if(cur >= target){ cur = target; clearInterval(t); }
+      el.textContent = cur;
+    }, 26);
+  });
+  $("#lede-n").textContent = items.length;
+  $("#lede-s").textContent = DATA.meta && DATA.meta.sourceCount ? DATA.meta.sourceCount : 40;
+  var up = (DATA.meta && DATA.meta.updated) || "—";
+  $("#updated").textContent = up;
+  $("#f-updated").textContent = up;
+}
+
+/* ---------- 渲染分类 chips ---------- */
+function renderChips(){
+  var counts = {};
+  DATA.items.forEach(function(i){ counts[i.category]=(counts[i.category]||0)+1; });
+  var order = (DATA.meta && DATA.meta.categories) || Object.keys(counts);
+  var html = '<button class="chip on" data-c="全部">全部 <span class="c">'+DATA.items.length+'</span></button>';
+  order.forEach(function(c){
+    if(!counts[c]) return;
+    html += '<button class="chip" data-c="'+esc(c)+'">'+
+      '<span class="kd" style="background:'+catColor(c)+'"></span>'+esc(c)+
+      ' <span class="c">'+counts[c]+'</span></button>';
+  });
+  $("#chips").innerHTML = html;
+  $("#chips").querySelectorAll(".chip").forEach(function(b){
+    b.addEventListener("click", function(){
+      $("#chips").querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); x.style.background=""; x.style.color=""; });
+      b.classList.add("on");
+      var c = b.dataset.c;
+      state.cat = c;
+      if(c !== "全部"){ b.style.background = catColor(c); b.style.color = "#04060d"; }
+      apply();
+    });
+  });
+}
+
+/* ---------- 过滤 + 排序 ---------- */
+function apply(){
+  var q = state.q.trim().toLowerCase();
+  var list = DATA.items.filter(function(i){
+    if(state.cat !== "全部" && i.category !== state.cat) return false;
+    if(!q) return true;
+    var hay = [i.title,i.summary,i.content,i.source,i.region,i.category,(i.tags||[]).join(" ")].join(" ").toLowerCase();
+    return hay.indexOf(q) !== -1;
+  });
+  list.sort(function(a,b){
+    if(state.sort==="heat") return (b.heat||0)-(a.heat||0);
+    if(state.sort==="date") return String(b.date||"").localeCompare(String(a.date||""));
+    if(state.sort==="cat"){
+      var x = String(a.category).localeCompare(String(b.category),"zh");
+      return x !== 0 ? x : (b.heat||0)-(a.heat||0);
+    }
+    return 0;
+  });
+  state.list = list;
+  $("#count").textContent = list.length;
+  $("#feed-title").textContent = state.cat === "全部" ? "资讯流" : state.cat;
+  if(state.view === "grid") renderGrid(list); else renderTimeline(list);
+}
+
+/* ---------- 卡片视图 ---------- */
+function renderGrid(list){
+  var box = $("#feed-body");
+  if(!list.length){ box.innerHTML = emptyHtml(); return; }
+  box.className = "";
+  box.innerHTML = '<div class="grid">' + list.map(function(i,idx){
+    var col = catColor(i.category);
+    return '<article class="card" data-id="'+i.id+'" style="transition-delay:'+Math.min(idx*22,320)+'ms">'+
+      '<div class="card-top">'+
+        '<span class="tag" style="color:'+col+';background:'+hexA(col,.13)+';border:1px solid '+hexA(col,.3)+'">'+esc(i.category)+'</span>'+
+        '<span class="card-date">'+fmtDate(i.date)+'</span>'+
+      '</div>'+
+      '<h3>'+esc(i.title)+'</h3>'+
+      '<p class="sum">'+esc(i.summary)+'</p>'+
+      '<div class="card-bot">'+
+        '<span class="src" title="'+esc(i.source)+'">'+esc(i.source)+'</span>'+
+        '<span class="heat"><span class="hbar"><span class="hfill" style="width:'+Math.max(8,Math.min(100,i.heat||0))+'%"></span></span><span class="hv">'+ (i.heat||0) +'</span></span>'+
+      '</div>'+
+    '</article>';
+  }).join("") + '</div>';
+  observeCards();
+  bindCards();
+}
+
+/* ---------- 时间线视图 ---------- */
+function renderTimeline(list){
+  var box = $("#feed-body");
+  if(!list.length){ box.innerHTML = emptyHtml(); return; }
+  var groups = {};
+  list.forEach(function(i){
+    var m = String(i.date||"").slice(0,7) || "未标注";
+    (groups[m] = groups[m] || []).push(i);
+  });
+  var months = Object.keys(groups).sort().reverse();
+  box.innerHTML = '<div class="timeline">' + months.map(function(m){
+    var arr = groups[m].slice().sort(function(a,b){ return String(b.date).localeCompare(String(a.date)); });
+    return '<div class="tl-group">'+
+      '<div class="tl-month">'+esc(m.replace("-"," 年 "))+' 月 · '+arr.length+' 条</div>'+
+      arr.map(function(i){
+        var col = catColor(i.category);
+        return '<div class="tl-item" data-id="'+i.id+'">'+
+          '<span class="d">'+fmtDate(i.date)+'</span>'+
+          '<span class="t">'+esc(i.title)+'</span>'+
+          '<span class="g" style="color:'+col+';background:'+hexA(col,.13)+';border:1px solid '+hexA(col,.3)+'">'+esc(i.category)+'</span>'+
+        '</div>';
+      }).join("")+
+    '</div>';
+  }).join("") + '</div>';
+  bindCards();
+}
+
+function hexA(hex,a){
+  var h = hex.replace("#","");
+  if(h.length===3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  return "rgba("+r+","+g+","+b+","+a+")";
+}
+function emptyHtml(){
+  return '<div class="empty"><div class="big">// NO DATA</div><div>没有匹配的情报条目，试试换个关键词或分类。</div></div>';
+}
+
+/* ---------- 卡片交互 ---------- */
+function bindCards(){
+  document.querySelectorAll("[data-id]").forEach(function(el){
+    if(el.dataset.bound) return;
+    el.dataset.bound = "1";
+    el.addEventListener("click", function(){ openDetail(el.dataset.id); });
+    if(el.classList.contains("card")){
+      el.addEventListener("mousemove", function(e){
+        var r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", ((e.clientX-r.left)/r.width*100)+"%");
+        el.style.setProperty("--my", ((e.clientY-r.top)/r.height*100)+"%");
+      });
+    }
+  });
+}
+function observeCards(){
+  if(!("IntersectionObserver" in window)){
+    document.querySelectorAll(".card").forEach(function(c){ c.classList.add("in"); });
+    return;
+  }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin:"0px 0px -40px 0px", threshold:.04 });
+  document.querySelectorAll(".card").forEach(function(c){ io.observe(c); });
+}
+
+/* ---------- 详情抽屉 ---------- */
+var curItem = null;
+function openDetail(id){
+  var i = DATA.items.filter(function(x){ return x.id===id; })[0];
+  if(!i) return;
+  curItem = i;
+  var col = catColor(i.category);
+  var tg = $("#dr-tag");
+  tg.textContent = i.category;
+  tg.style.color = col;
+  tg.style.background = hexA(col,.13);
+  tg.style.border = "1px solid " + hexA(col,.3);
+  $("#dr-title").textContent = i.title;
+  $("#dr-meta").innerHTML =
+    '<span class="m">'+fmtDate(i.date)+'</span>'+
+    '<span class="m">'+esc(i.region)+'</span>'+
+    '<span class="m">热度 '+ (i.heat||0) +'</span>'+
+    '<span class="m">'+esc(i.id)+'</span>';
+  $("#dr-sum").textContent = i.summary;
+  $("#dr-content").innerHTML = String(i.content||"").split("\n").filter(Boolean).map(function(line){
+    var t = line.replace(/^[·•\-\s]+/,"");
+    return '<div class="li"><span class="bd"></span><span class="tx">'+esc(t)+'</span></div>';
+  }).join("");
+  $("#dr-tags").innerHTML = (i.tags||[]).map(function(t){ return '<span class="tg">#'+esc(t)+'</span>'; }).join("");
+  var a = $("#dr-src");
+  if(i.url){ a.href = i.url; a.style.display = ""; } else { a.style.display = "none"; }
+  a.textContent = "查看原文 → " + (i.source||"").split(" / ")[0];
+  $("#mask").classList.add("on");
+  $("#drawer").classList.add("on");
+  document.body.style.overflow = "hidden";
+  $("#drawer").querySelector(".dr-body").scrollTop = 0;
+}
+function closeDetail(){
+  $("#mask").classList.remove("on");
+  $("#drawer").classList.remove("on");
+  document.body.style.overflow = "";
+}
+$("#mask").addEventListener("click", closeDetail);
+$("#dr-x").addEventListener("click", closeDetail);
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape") closeDetail();
+  if(e.key === "/" && document.activeElement !== $("#q")){ e.preventDefault(); $("#q").focus(); }
+});
+$("#dr-copy").addEventListener("click", function(){
+  if(!curItem) return;
+  var md = "# " + curItem.title + "\n\n" +
+    "- 分类：" + curItem.category + "\n- 日期：" + curItem.date + "\n- 地区：" + curItem.region +
+    "\n- 来源：" + curItem.source + "\n- 标签：" + (curItem.tags||[]).join("、") +
+    "\n- 原文：" + (curItem.url||"") + "\n\n## 摘要\n\n" + curItem.summary +
+    "\n\n## 详情\n\n" + String(curItem.content||"").split("\n").filter(Boolean).map(function(l){
+      return l.indexOf("·")===0 ? l : ("- "+l); }).join("\n");
+  var btn = this, old = btn.textContent;
+  var done = function(){ btn.textContent = "已复制 ✓"; setTimeout(function(){ btn.textContent = old; }, 1500); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(md).then(done, function(){ fallbackCopy(md, done); });
+  } else { fallbackCopy(md, done); }
+});
+function fallbackCopy(txt, cb){
+  var ta = document.createElement("textarea");
+  ta.value = txt; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); cb(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ---------- 统计区 ---------- */
+function renderStats(){
+  var counts = {}, total = DATA.items.length;
+  DATA.items.forEach(function(i){ counts[i.category]=(counts[i.category]||0)+1; });
+  var order = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+
+  /* 环形图 */
+  var R = 62, SW = 17, C = 2*Math.PI*R, off = 0;
+  var segs = order.map(function(c){
+    var frac = counts[c]/total, len = frac*C;
+    var s = '<circle cx="80" cy="80" r="'+R+'" fill="none" stroke="'+catColor(c)+'" stroke-width="'+SW+'"'+
+            ' stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'"'+
+            ' transform="rotate(-90 80 80)" style="cursor:pointer" data-c="'+esc(c)+'"></circle>';
+    off += len;
+    return s;
+  }).join("");
+  $("#donut").innerHTML =
+    '<svg width="160" height="160" viewBox="0 0 160 160">'+
+      '<circle cx="80" cy="80" r="'+R+'" fill="none" stroke="rgba(96,165,250,.09)" stroke-width="'+SW+'"></circle>'+
+      segs +
+      '<text x="80" y="74" text-anchor="middle" fill="#e8eefb" font-size="30" font-weight="800" font-family="JetBrains Mono,monospace">'+total+'</text>'+
+      '<text x="80" y="95" text-anchor="middle" fill="#7d8fab" font-size="10.5" font-family="JetBrains Mono,monospace" letter-spacing="1.6">TOTAL</text>'+
+    '</svg>';
+  $("#legend").innerHTML = order.map(function(c){
+    return '<div class="lg" data-c="'+esc(c)+'"><span class="sw" style="background:'+catColor(c)+'"></span>'+
+      esc(c)+'<span class="n">'+counts[c]+' · '+Math.round(counts[c]/total*100)+'%</span></div>';
+  }).join("");
+  document.querySelectorAll("#donut [data-c], #legend .lg").forEach(function(el){
+    el.addEventListener("click", function(){
+      state.cat = el.dataset.c;
+      $("#chips").querySelectorAll(".chip").forEach(function(b){
+        var on = b.dataset.c === state.cat;
+        b.classList.toggle("on", on);
+        b.style.background = on && state.cat !== "全部" ? catColor(state.cat) : "";
+        b.style.color = on && state.cat !== "全部" ? "#04060d" : "";
+      });
+      apply();
+      $("#feed").scrollIntoView({behavior:"smooth"});
+    });
+  });
+
+  /* TOP 10 */
+  var top = DATA.items.slice().sort(function(a,b){ return (b.heat||0)-(a.heat||0); }).slice(0,10);
+  var mx = top[0] ? top[0].heat : 100;
+  $("#rank").innerHTML = top.map(function(i,k){
+    return '<div class="rk" data-id="'+i.id+'">'+
+      '<span class="i'+(k<3?" top":"")+'">'+String(k+1).padStart(2,"0")+'</span>'+
+      '<span class="tx" title="'+esc(i.title)+'">'+esc(i.title)+'</span>'+
+      '<span class="bv"><span class="bf" style="width:'+Math.round((i.heat||0)/mx*100)+'%"></span></span>'+
+      '<span class="hv" style="font-family:var(--mono);font-size:10.5px;color:var(--muted);width:24px;text-align:right">'+(i.heat||0)+'</span>'+
+    '</div>';
+  }).join("");
+  bindCards();
+
+  /* 时间轴（按月柱状） */
+  var bym = {};
+  DATA.items.forEach(function(i){
+    var m = String(i.date||"").slice(0,7);
+    if(m) bym[m] = (bym[m]||0)+1;
+  });
+  var ms = Object.keys(bym).sort();
+  var maxv = Math.max.apply(null, ms.map(function(m){ return bym[m]; }));
+  var W = 100, gap = ms.length>1 ? 100/(ms.length*1.7) : 20;
+  var bw = Math.max(2.4, 100/ms.length - gap*0.5);
+  var maxH = 132;
+  var bars = ms.map(function(m,k){
+    var h = Math.max(4, bym[m]/maxv*maxH);
+    var x = k*(100/ms.length) + (100/ms.length - bw)/2;
+    return '<rect x="'+x+'" y="'+(maxH-h)+'" width="'+bw+'" height="'+h+'" rx="1.4" fill="url(#gbar)">'+
+      '<title>'+m+'：'+bym[m]+' 条</title></rect>';
+  }).join("");
+  var labels = ms.map(function(m,k){
+    if(ms.length > 12 && k % 2) return "";
+    var x = k*(100/ms.length) + (100/ms.length)/2;
+    return '<text x="'+x+'" y="'+(maxH+15)+'" text-anchor="middle" fill="#7d8fab" font-size="6.2" font-family="JetBrains Mono,monospace">'+m.slice(2)+'</text>';
+  }).join("");
+  $("#trend").innerHTML =
+    '<svg viewBox="0 0 100 '+(maxH+24)+'" preserveAspectRatio="none" style="width:100%;height:180px">'+
+      '<defs><linearGradient id="gbar" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity=".35"/>'+
+      '</linearGradient></defs>'+
+      '<line x1="0" y1="'+maxH+'" x2="100" y2="'+maxH+'" stroke="rgba(96,165,250,.2)" stroke-width="0.25"/>'+
+      bars + labels +
+    '</svg>';
+}
+
+/* ---------- 事件 ---------- */
+var tq = null;
+$("#q").addEventListener("input", function(e){
+  var v = e.target.value;
+  clearTimeout(tq);
+  tq = setTimeout(function(){ state.q = v; apply(); }, 150);
+});
+$("#sort").addEventListener("change", function(e){ state.sort = e.target.value; apply(); });
+$("#view").querySelectorAll("button").forEach(function(b){
+  b.addEventListener("click", function(){
+    $("#view").querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    state.view = b.dataset.v;
+    apply();
+  });
+});
+window.addEventListener("scroll", function(){
+  $("#top").classList.toggle("on", window.scrollY > 620);
+});
+$("#top").addEventListener("click", function(){ window.scrollTo({top:0,behavior:"smooth"}); });
+
+/* ---------- 时钟 ---------- */
+function tick(){
+  var d = new Date();
+  var p = function(n){ return String(n).padStart(2,"0"); };
+  $("#clock").textContent = p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+}
+setInterval(tick, 1000); tick();
+
+/* ---------- 背景粒子 ---------- */
+(function(){
+  var cv = $("#bg-canvas"), ctx = cv.getContext("2d");
+  var w, h, pts = [], raf;
+  function resize(){
+    w = cv.width = window.innerWidth;
+    h = cv.height = window.innerHeight;
+    var n = Math.min(72, Math.round(w*h/24000));
+    pts = [];
+    for(var i=0;i<n;i++){
+      pts.push({ x:Math.random()*w, y:Math.random()*h,
+                 vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+                 r:Math.random()*1.5+.5 });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(var i=0;i<pts.length;i++){
+      var p = pts[i];
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>w) p.vx*=-1;
+      if(p.y<0||p.y>h) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,6.2832);
+      ctx.fillStyle = "rgba(96,165,250,.55)";
+      ctx.fill();
+    }
+    for(var a=0;a<pts.length;a++){
+      for(var b=a+1;b<pts.length;b++){
+        var dx = pts[a].x-pts[b].x, dy = pts[a].y-pts[b].y;
+        var d2 = dx*dx+dy*dy;
+        if(d2 < 17000){
+          ctx.beginPath();
+          ctx.moveTo(pts[a].x,pts[a].y);
+          ctx.lineTo(pts[b].x,pts[b].y);
+          ctx.strokeStyle = "rgba(34,211,238,"+(0.14*(1-d2/17000))+")";
+          ctx.lineWidth = .7;
+          ctx.stroke();
+        }
+      }
+    }
+    raf = requestAnimationFrame(draw);
+  }
+  resize();
+  draw();
+  var rt = null;
+  window.addEventListener("resize", function(){ clearTimeout(rt); rt = setTimeout(resize, 180); });
+})();
+
+/* ---------- 启动 ---------- */
+function boot(){
+  renderKpis();
+  renderChips();
+  apply();
+  renderStats();
+}
+boot();
+
+/* 尝试用远端 data.json 覆盖（保持数据可独立更新） */
+(function(){
+  if(location.protocol === "file:") return;
+  fetch("data.json", {cache:"no-cache"})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if(!j || !j.items || !j.items.length) return;
+      if(j.items.length === DATA.items.length &&
+         (j.meta && j.meta.updated) === (DATA.meta && DATA.meta.updated)) return;
+      DATA = j;
+      state.cat = "全部"; state.q = ""; $("#q").value = "";
+      boot();
+    })
+    .catch(function(){});
+})();
+</script>
+</body>
+</html>
