@@ -99,14 +99,22 @@ python -m http.server 8000
 
 ## 部署
 
-`deploy.yml` 在 `push main` 或手动 `workflow_dispatch` 时触发：
+当前使用 **Deploy from a branch**：Pages 源为 `main` 分支的 `/` 根目录，推送即发布，无需构建步骤（纯静态、无外部依赖，Jekyll 不会改动任何文件）。
+
+仓库 Settings → Pages → Source 需为 `Deploy from a branch` / `main` / `/ (root)`。
+
+### 可选：升级为 GitHub Actions 发布
+
+若希望走显式构建流程（组装 `_site/`、写入 `.nojekyll`、可控 artifact），可将 `.github/workflows/deploy.yml` 加入仓库，并把 Pages 的 Source 切到 **GitHub Actions**。
+
+该工作流在 `push main` 或手动 `workflow_dispatch` 时触发：
 
 1. `actions/configure-pages@v5` 初始化 Pages；
 2. 组装 `_site/`（`index.html` + `data.json` + `.nojekyll`）；
 3. `actions/upload-pages-artifact@v3` 打包；
 4. `actions/deploy-pages@v4` 发布到 GitHub Pages。
 
-仓库 Settings → Pages 的 Source 需为 **GitHub Actions**。
+> 注意：推送 `.github/workflows/**` 需要所用 Token 具备 **Workflows: Read and write** 权限（classic token 对应 `workflow` scope），否则 GitHub 会拒绝该文件的推送。
 
 ---
 
