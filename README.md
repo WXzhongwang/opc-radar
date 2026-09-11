@@ -2,9 +2,10 @@
 
 > 全平台追踪「一人公司」（One Person Company, OPC）热门资讯的静态情报聚合站点。
 
-一个零依赖、单文件的科技感数据看板：所有情报沉淀在 `data.json`，页面在浏览器端读取并渲染。推送 `main` 分支后由 GitHub Actions 自动发布到 GitHub Pages。
+一个零依赖、单文件的科技感数据看板：所有情报沉淀在 `data.json`，页面在浏览器端读取并渲染。推送 `main` 分支后由 Cloudflare Pages 与 GitHub Pages 双通道自动发布。
 
-线上地址：https://wxzhongwang.github.io/opc-radar/
+线上地址：**https://opc-radar.pages.dev/**
+备用地址：https://wxzhongwang.github.io/opc-radar/
 
 ---
 
@@ -99,7 +100,7 @@ opc-radar/
 
 1. 编辑 `data.json`，按上表追加条目（`id` 不重复、`category` 在分类白名单内）。
 2. 若新增条目需要离线可用，把 `data.json` 内容重新内嵌回 `index.html` 的 `var EMBEDDED = …`（可选；线上环境会自动 `fetch` 最新数据）。
-3. 提交并推送到 `main`，GitHub Actions 自动构建并发布。
+3. 提交并推送到 `main`，Cloudflare Pages 与 GitHub Pages 会自动发布。
 
 ```bash
 git add -A
@@ -158,6 +159,16 @@ window.ANALYTICS.busuanzi.enabled = false;
 统计脚本由访客浏览器直接向对应服务商发起请求，本站无中间服务器、不采集任何表单数据。若面向欧盟用户或有合规要求，建议只启用无 cookie 的方案（不蒜子 / Cloudflare / Umami / GoatCounter）并相应调整隐私声明。
 
 ## 部署
+
+纯静态、无构建步骤，推送 `main` 分支后由两条通道自动发布。
+
+### 主站：Cloudflare Pages
+
+- 线上地址：**https://opc-radar.pages.dev/**
+- 关联 GitHub 仓库的 `main` 分支，推送即触发构建并发布仓库根目录
+- 附带分支预览与构建回滚能力
+
+### 备用：GitHub Pages
 
 当前使用 **Deploy from a branch**：Pages 源为 `main` 分支的 `/` 根目录，推送即发布，无需构建步骤（纯静态、无外部依赖，Jekyll 不会改动任何文件）。
 
