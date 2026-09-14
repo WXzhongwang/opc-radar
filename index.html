@@ -509,8 +509,8 @@ footer a:hover{color:var(--cyan)}
         <input id="q" type="search" placeholder="搜索标题、摘要、正文、标签、来源…  按 / 快速聚焦" autocomplete="off">
       </div>
       <select id="sort">
+        <option value="date" selected>按时间排序（最新优先）</option>
         <option value="heat">按热度排序</option>
-        <option value="date">按时间排序</option>
         <option value="cat">按分类排序</option>
       </select>
       <div class="seg" id="view">
@@ -612,7 +612,7 @@ var CAT_COLOR = {
 function catColor(c){ return CAT_COLOR[c] || "#60a5fa"; }
 
 var DATA = EMBEDDED;
-var state = { q:"", cat:"全部", sort:"heat", view:"grid", list:[] };
+var state = { q:"", cat:"全部", sort:"date", view:"grid", list:[] };
 
 /* ---------- 工具 ---------- */
 function $(s,r){ return (r||document).querySelector(s); }
