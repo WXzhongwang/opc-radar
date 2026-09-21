@@ -219,7 +219,7 @@ select{background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--te
 /* ---------- 地理分布（合规地图组件） ---------- */
 .geo{margin-top:54px;padding-top:38px;border-top:1px solid var(--line)}
 .geo-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
-#geo-map{width:100%;height:520px;border-radius:var(--radius);border:1px solid var(--line);
+#geo-map{width:100%;aspect-ratio:1000/748;border-radius:var(--radius);border:1px solid var(--line);
   background:#080d18;overflow:hidden}
 .geo-side{display:flex;flex-direction:column;gap:11px;min-width:0}
 .geo-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -231,6 +231,7 @@ select{background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--te
 .gr{display:flex;align-items:center;gap:10px;font-size:12.6px;cursor:pointer;padding:5px 7px;
   border-radius:9px;transition:.18s;min-width:0}
 .gr:hover{background:rgba(34,211,238,.09);color:var(--cyan)}
+.gr.on{background:rgba(251,191,36,.10);color:var(--amber)}
 .gr .bar{flex:1;height:6px;border-radius:4px;background:rgba(96,165,250,.12);overflow:hidden;min-width:36px}
 .gr .bar i{display:block;height:100%;border-radius:4px;
   background:linear-gradient(90deg,var(--cyan),var(--violet))}
@@ -591,15 +592,17 @@ footer a:hover{color:var(--cyan)}
   <section class="geo" id="geo">
     <div class="bar">
       <h2>地理分布</h2>
-      <div class="meta">按地区汇总情报数量 · TENCENT MAPS 合规底图</div>
+      <div class="meta">按地区汇总情报数量 · 矢量示意图 · 零 Key 零配额</div>
     </div>
     <div class="geo-grid">
       <div>
         <div id="geo-map"></div>
         <div class="geo-fb" id="geo-fb"></div>
         <div class="geo-note">
-          底图为腾讯位置服务（境内合规地图源）。每个气泡代表一座城市，气泡上的数字是该城市累计收录的情报条数；
-          点击右侧排行可定位到对应城市。坐标均为城市中心点近似值，仅用于分布示意，不代表精确位置。
+          这是<b>矢量示意图</b>而非真实底图：只表达「情报大致分布在哪些省市」，省份颜色越亮代表该地收录越多，
+          气泡代表城市、数字为累计条数；点击右侧排行或气泡可互相高亮。
+          边界数据含台湾省、香港、澳门与南海诸岛，符合国家版图完整性要求；
+          不加载任何地图瓦片服务，因此<b>无需 Key、不占配额、断网可用</b>。坐标为城市中心点近似值，非精确位置。
         </div>
       </div>
       <div class="geo-side">
@@ -652,6 +655,8 @@ footer a:hover{color:var(--cyan)}
   </div>
 </aside>
 
+<script src="chinamap.js"></script>
+<script src="map-svg.js"></script>
 <script src="geo.js"></script>
 <script>
 /* =========================================================
@@ -1094,7 +1099,7 @@ setInterval(tick, 1000); tick();
    - 统计：把每条情报的 region 归一化到城市，按城市汇总条数
    - 合规：不内置任何地图 Key；未配置时自动降级为清单模式
    ========================================================= */
-var GEO = { map:null, label:null, marker:null, agg:null, loading:false, failed:false };
+var GEO = { agg:null, view:null };
 
 function geoAgg(){
   var G = window.OPCGEO;
@@ -1166,12 +1171,8 @@ function renderGeo(){
 
     Array.prototype.forEach.call(rank.querySelectorAll(".gr[data-city]"), function(el){
       el.addEventListener("click", function(){
-        var c = el.getAttribute("data-city"), p = G.coordOf(c);
-        if(!p) return;
-        if(GEO.map && window.TMap){
-          GEO.map.setCenter(new window.TMap.LatLng(p.lat, p.lng));
-          GEO.map.setZoom(9);
-        }
+        var c = el.getAttribute("data-city");
+        if(GEO.view && GEO.view.focus) GEO.view.focus("c-" + c);
       });
     });
   }
@@ -1179,83 +1180,44 @@ function renderGeo(){
   drawGeoMap();
 }
 
+function highlightRank(city){
+  var rank = $("#geo-rank");
+  if(!rank) return;
+  Array.prototype.forEach.call(rank.querySelectorAll(".gr.on"), function(el){ el.classList.remove("on"); });
+  var row = rank.querySelector('.gr[data-city="' + city + '"]');
+  if(row){ row.classList.add("on"); if(row.scrollIntoView) row.scrollIntoView({block:"nearest"}); }
+}
+
+/* 简版示意图：矢量渲染，不请求任何地图服务，不需要 Key，也无所谓配额 */
 function drawGeoMap(){
-  var G = window.OPCGEO;
-  if(!G || !GEO.agg) return;
-
-  var arr = GEO.agg.cities;
-  var labelGeoms = arr.map(function(x){
-    return { id:x.city, styleId:"default",
-             position:new window.TMap.LatLng(x.lat, x.lng),
-             content:x.city + " " + x.n };
-  });
-
-  /* 已就绪：只更新几何，不重复建图 */
-  if(GEO.map && window.TMap){
-    try{
-      if(GEO.label) GEO.label.setGeometries(labelGeoms);
-      else if(GEO.marker) GEO.marker.setGeometries(labelGeoms.map(function(g){
-        return { id:g.id, styleId:"default", position:g.position };
-      }));
-    }catch(e){}
+  var CN = window.OPCCHINA;
+  var box = $("#geo-map"), fb = $("#geo-fb");
+  if(!window.OPCMAP || !window.OPCMAP.ready()){
+    if(fb){
+      fb.className = "geo-fb show";
+      fb.innerHTML = '<h4>示意图数据未加载</h4>' +
+        '<div>chinamap.js 未能加载。右侧的城市汇总与排行<b>不受影响，已正常可用</b>。</div>';
+    }
     return;
   }
-  if(GEO.loading || GEO.failed) return;
-  GEO.loading = true;
-
-  G.loadTMap().then(function(TMap){
-    GEO.loading = false;
-    GEO.map = new TMap.Map("geo-map", {
-      center:new TMap.LatLng(34.5, 108.9),
-      zoom:4.4,
-      viewMode:"2D"
-    });
-    var geoms = arr.map(function(x){
-      return { id:x.city, styleId:"default",
-               position:new TMap.LatLng(x.lat, x.lng),
-               content:x.city + " " + x.n };
-    });
-    try{
-      GEO.label = new TMap.MultiLabel({
-        map:GEO.map,
-        styles:{ default:new TMap.LabelStyle({
-          color:"#04060d", size:11,
-          offset:{ x:0, y:0 },
-          alignment:"center", verticalAlignment:"middle",
-          backgroundColor:"rgba(34,211,238,.92)",
-          borderColor:"rgba(255,255,255,.85)", borderWidth:1
-        }) },
-        geometries:geoms
-      });
-    }catch(e){
-      GEO.marker = new TMap.MultiMarker({
-        map:GEO.map,
-        styles:{ default:new TMap.MarkerStyle({ width:13, height:18, anchor:{ x:6, y:18 } }) },
-        geometries:geoms.map(function(g){
-          return { id:g.id, styleId:"default", position:g.position };
-        })
-      });
-    }
-  }).catch(function(err){
-    GEO.loading = false;
-    GEO.failed = true;
-    var fb = $("#geo-fb"), mk = $("#geo-map");
-    if(!fb) return;
-    if(mk) mk.style.display = "none";
-    fb.className = "geo-fb show";
-    if(err && err.message === "NO_KEY"){
-      fb.innerHTML =
-        '<h4>底图需站点维护者配置腾讯位置服务 Key</h4>' +
-        '<div>为保证合规，本站<b>不内置任何地图 Key</b>（前端明文 Key 有被窃取风险）。' +
-        '右侧的城市汇总与排行<b>不依赖底图，已正常可用</b>。启用底图：</div>' +
-        '<ol>' +
-          '<li>在 <a href="https://lbs.qq.com/" target="_blank" rel="noopener">腾讯位置服务</a> 申请 JavaScript GL 类型 Key</li>' +
-          '<li>在 Key 的「域名白名单」中填入 <code>wxzhongwang.github.io</code>，防止被他人盗用</li>' +
-          '<li>在本页设置 <code>window.OPCGEO_TMAP_KEY = "你的Key"</code> 即可显示</li>' +
-        '</ol>';
-    }else{
-      fb.innerHTML = '<h4>地图加载失败</h4><div>可能是网络或 SDK 限制，城市汇总与排行功能不受影响。</div>';
-    }
+  var a = GEO.agg, values = {};
+  (a.provs || []).forEach(function(x){
+    var full = CN.byShort[x.prov];
+    if(full) values[full] = (values[full] || 0) + x.n;
+  });
+  (a.cities || []).forEach(function(x){
+    var full = CN.cityProv[x.city];
+    if(full) values[full] = (values[full] || 0) + x.n;
+  });
+  var pts = (a.cities || []).map(function(x){
+    return { id:"c-" + x.city, city:x.city, n:x.n, lat:x.lat, lng:x.lng };
+  });
+  GEO.view = window.OPCMAP.render(box, {
+    values: values,
+    points: pts,
+    labelFrom: 3,
+    maxLabels: 10,
+    onPick: function(x){ highlightRank(x.city); }
   });
 }
 
