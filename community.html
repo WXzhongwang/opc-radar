@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04060d">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
+<title>找社区 · OPC 情报站</title>
+<meta name="description" content="全国 OPC（一人公司）社区登记簿：已由权威渠道公开报道的社区/基地/服务专区，可按你的当前位置由近到远排序，附来源可溯源。">
+<link rel="canonical" href="https://wxzhongwang.github.io/opc-radar/community.html">
+<style>
+:root{
+  --bg:#04060d;--bg-2:#070b16;--panel:rgba(12,18,33,.72);--panel-solid:#0b1120;
+  --panel-2:rgba(18,26,46,.6);--line:rgba(96,165,250,.14);--line-2:rgba(96,165,250,.28);
+  --cyan:#22d3ee;--violet:#a78bfa;--blue:#60a5fa;--green:#34d399;--amber:#fbbf24;
+  --rose:#fb7185;--orange:#fb923c;--teal:#2dd4bf;--indigo:#818cf8;
+  --text:#e8eefb;--text-2:#b6c4dd;--muted:#7d8fab;--radius:16px;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+::selection{background:rgba(34,211,238,.3);color:#fff}
+a{color:var(--cyan)}
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(900px 520px at 12% -6%,rgba(34,211,238,.14),transparent 62%),
+             radial-gradient(760px 480px at 88% 4%,rgba(139,92,246,.14),transparent 62%),
+             radial-gradient(900px 600px at 50% 108%,rgba(59,130,246,.10),transparent 66%)}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(96,165,250,.055) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(96,165,250,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 90% 62% at 50% 34%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 62% at 50% 34%,#000 30%,transparent 100%)}
+.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 22px}
+header{position:sticky;top:0;z-index:60;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:linear-gradient(180deg,rgba(4,6,13,.94),rgba(4,6,13,.66));border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.4px;font-size:16px;text-decoration:none;color:var(--text)}
+.logo{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));box-shadow:0 0 22px rgba(34,211,238,.42);
+  font-family:var(--mono);font-size:13px;color:#04060d;font-weight:900}
+.brand small{display:block;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:2.2px;font-family:var(--mono)}
+.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--text-2);text-decoration:none;font-size:13px;padding:7px 12px;border-radius:9px;transition:.2s}
+.nav-links a:hover{color:var(--cyan);background:rgba(34,211,238,.09)}
+.nav-links a.on{color:#fff;background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(167,139,250,.2));
+  box-shadow:inset 0 0 0 1px rgba(34,211,238,.34)}
+.hero{padding:52px 0 26px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:2.6px;color:var(--cyan);border:1px solid rgba(34,211,238,.3);
+  background:rgba(34,211,238,.06);padding:7px 15px;border-radius:24px;margin-bottom:20px}
+h1{font-size:clamp(28px,5vw,48px);line-height:1.1;font-weight:900;letter-spacing:-1px;margin-bottom:16px}
+.grad{background:linear-gradient(100deg,#22d3ee,#60a5fa 34%,#a78bfa 68%,#f0abfc);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{max-width:820px;color:var(--text-2);font-size:15px}
+.lede b{color:var(--cyan);font-weight:600}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:18px}
+.toolbar{position:sticky;top:62px;z-index:50;padding:14px 0;margin:18px 0 6px;
+  background:linear-gradient(180deg,rgba(4,6,13,.96),rgba(4,6,13,.8));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.tb-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer;font-family:var(--sans);
+  font-size:13.5px;font-weight:600;padding:10px 17px;border-radius:11px;text-decoration:none;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));color:#04060d;transition:.18s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn.ghost{background:rgba(10,16,30,.86);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{color:var(--cyan);box-shadow:inset 0 0 0 1px var(--line-2)}
+select,input[type=search]{background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--text);
+  font-size:13px;padding:10px 12px;border-radius:11px;outline:none;cursor:pointer;font-family:var(--sans)}
+select:focus,input[type=search]:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+.geo-state{font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:6px 11px;
+  border:1px solid var(--line);border-radius:20px;white-space:nowrap}
+.geo-state.ok{color:var(--green);border-color:rgba(52,211,153,.34)}
+.geo-state.warn{color:var(--amber);border-color:rgba(251,191,36,.34)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;margin:20px 0 40px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}}
+#map{width:100%;height:520px;border-radius:var(--radius);border:1px solid var(--line);
+  background:#080d18;overflow:hidden}
+@media(max-width:960px){#map{height:360px}}
+.map-fallback{display:none;padding:18px;border-radius:var(--radius);border:1px dashed var(--line-2);
+  background:rgba(10,16,30,.7);font-size:13px;color:var(--text-2)}
+.map-fallback.show{display:block}
+.map-fallback h4{font-size:14px;color:var(--amber);margin-bottom:9px}
+.map-fallback ol{margin:9px 0 9px 20px;font-size:12.5px;color:var(--muted)}
+.map-fallback code{font-family:var(--mono);font-size:12px;color:var(--violet);
+  background:rgba(167,139,250,.1);padding:2px 6px;border-radius:5px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin:0 0 12px;flex-wrap:wrap}
+.sec-head h2{font-size:17px;font-weight:800;letter-spacing:.2px}
+.sec-head .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+#list{display:flex;flex-direction:column;gap:11px}
+.card{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:15px 17px;transition:.2s}
+.card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--cyan),var(--violet))}
+.card .c-top{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.card .c-name{font-size:15px;font-weight:750;flex:1;min-width:180px}
+.card .c-dist{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--green);
+  background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.28);padding:3px 9px;border-radius:20px;white-space:nowrap}
+.badge{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border-radius:20px;
+  border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.b1{color:var(--cyan);border-color:rgba(34,211,238,.34);background:rgba(34,211,238,.08)}
+.badge.b2{color:var(--violet);border-color:rgba(167,139,250,.34);background:rgba(167,139,250,.08)}
+.badge.b3{color:var(--amber);border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.08)}
+.c-addr{font-size:13px;color:var(--text-2);margin:3px 0 5px}
+.c-addr svg{vertical-align:-2px;margin-right:5px;opacity:.7}
+.c-note{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.c-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+.c-foot a{font-size:11.5px;text-decoration:none;color:var(--blue)}
+.c-foot a:hover{text-decoration:underline}
+.empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:13.5px;
+  border:1px dashed var(--line);border-radius:14px}
+.note{margin:0 0 40px;padding:15px 18px;border-radius:14px;border:1px solid var(--line);
+  background:rgba(10,16,30,.6);font-size:12.5px;color:var(--muted);line-height:1.85}
+.note b{color:var(--text-2)}
+.note .h{color:var(--amber);font-weight:700}
+footer{border-top:1px solid var(--line);padding:24px 0 34px;margin-top:10px;
+  font-size:12px;color:var(--muted)}
+footer a{color:var(--blue);text-decoration:none}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;
+  box-shadow:0 0 9px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.32}}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div><div class="bg-grid"></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="./">
+      <div class="logo">OPC</div>
+      <div>OPC 情报站<small>OPC RADAR</small></div>
+    </a>
+    <div class="nav-links">
+      <a href="./">资讯流</a>
+      <a href="community.html" class="on">找社区</a>
+      <a href="people.html">找人</a>
+      <a href="https://github.com/WXzhongwang/opc-radar" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">FIND A COMMUNITY · 全国 OPC 社区登记簿</div>
+    <h1>离你最近的<span class="grad">OPC 社区</span></h1>
+    <p class="lede">
+      这里收录 <b id="n-comm">0</b> 个已由权威渠道公开报道的 OPC 社区 / 基地 / 服务专区。
+      授权定位后，列表会按<b>直线距离由近到远</b>排序；不方便授权也可以直接选城市。
+      每条都附原报道链接，可自行溯源核实。
+    </p>
+  </section>
+</div>
+
+<div class="toolbar">
+  <div class="wrap tb-row">
+    <button class="btn" id="btn-geo">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M12 21s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      用我的位置排序
+    </button>
+    <select id="sel-city"><option value="">按城市查看（无法定位时用）</option></select>
+    <select id="sel-type">
+      <option value="">全部类型</option>
+      <option value="社区">社区</option>
+      <option value="基地">基地</option>
+      <option value="专区">服务专区</option>
+      <option value="平台">平台</option>
+    </select>
+    <input type="search" id="q" placeholder="搜索社区名 / 城市 / 关键词…" style="min-width:190px;flex:1">
+    <span class="geo-state" id="geo-state">未定位</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+    <div>
+      <div class="sec-head"><h2>地图分布</h2><div class="meta" id="map-meta">TENCENT MAPS · 合规底图</div></div>
+      <div id="map"></div>
+      <div class="map-fallback" id="map-fb"></div>
+    </div>
+    <div>
+      <div class="sec-head"><h2>社区清单</h2><div class="meta" id="list-meta">按录入时间</div></div>
+      <div id="list"></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="h">关于地址与坐标的诚实说明</div>
+    <b>① 地址精度分级</b>：每条都标注了精度——<span class="badge b1">楼栋级</span> 来源明确写出楼栋/楼层；
+    <span class="badge b1">园区级</span> 明确到园区或载体名；<span class="badge b2">区县级</span> /
+    <span class="badge b2">城市级</span> 只核实到行政区，坐标为<b>行政区中心点近似值</b>，用于距离估算，
+    <b>不是门牌级定位</b>。签约入驻前请以来源公告与实际运营方为准。<br>
+    <b>② 底图合规</b>：地图使用腾讯位置服务（腾讯地图）GL JS，符合境内地图服务合规要求，不使用任何境外地图源。<br>
+    <b>③ 你的位置不会被上传</b>：定位只在你的浏览器内存里参与距离计算，<b>不写入本地存储、不上传服务器、不入库</b>，
+    刷新即失效（符合《个人信息保护法》对位置信息的要求）。<br>
+    <b>④ 数据来源</b>：全部来自各条情报原文（政府网站、党媒、地方媒体等公开报道），每条附来源链接。
+    发现地址有误或社区已停止运营？欢迎<a href="https://github.com/WXzhongwang/opc-radar/issues/new?template=community-fix.yml" target="_blank" rel="noopener">提交纠错</a>。
+  </div>
+
+  <footer>
+    <div class="wrap" style="padding:0">
+      OPC 情报站 · 找社区 · 数据更新 <span id="f-upd">—</span> ·
+      <a href="./">返回资讯流</a> · <a href="people.html">去找人 →</a> ·
+      <a href="https://github.com/WXzhongwang/opc-radar" target="_blank" rel="noopener">GitHub 仓库</a>
+    </div>
+  </footer>
+</div>
+
+<script src="geo.js"></script>
+<script>
+(function(){
+  'use strict';
+  var G = window.OPCGEO;
+  var ALL = [], VIEW = [], MY = null;      // MY 仅存内存，不落盘
+  var map = null, markers = null, meMarker = null;
+
+  var elList = document.getElementById('list');
+  var elState = document.getElementById('geo-state');
+  var elSelCity = document.getElementById('sel-city');
+  var elSelType = document.getElementById('sel-type');
+  var elQ = document.getElementById('q');
+  var elMapFb = document.getElementById('map-fb');
+
+  var TYPE_CLS = { '社区': 'b1', '基地': 'b1', '专区': 'b3', '平台': 'b2' };
+  var PREC = {
+    building: ['楼栋级', 'b1'], park: ['园区级', 'b1'],
+    district: ['区县级', 'b2'], city: ['城市级', 'b2']
+  };
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function setState(txt, cls){
+    elState.textContent = txt;
+    elState.className = 'geo-state' + (cls ? ' ' + cls : '');
+  }
+
+  function distTo(it){
+    if (!MY) return null;
+    return G.haversine(MY.lat, MY.lng, it.lat, it.lng);
+  }
+
+  /* ---------- 渲染 ---------- */
+  function applyFilter(){
+    var kw = (elQ.value || '').trim().toLowerCase();
+    var ty = elSelType.value, ct = elSelCity.value;
+    VIEW = ALL.filter(function(it){
+      if (ty && it.type !== ty) return false;
+      if (ct && it.city !== ct) return false;
+      if (kw){
+        var hay = [it.name, it.city, it.district, it.province, it.address, it.note, it.source,
+                   (it.tags||[]).join(' ')].join(' ').toLowerCase();
+        if (hay.indexOf(kw) === -1) return false;
+      }
+      return true;
+    });
+    if (MY){
+      VIEW.forEach(function(it){ it._d = distTo(it); });
+      VIEW.sort(function(a,b){ return a._d - b._d; });
+      document.getElementById('list-meta').textContent = '距你由近到远 · 共 ' + VIEW.length + ' 个';
+    } else {
+      VIEW.sort(function(a,b){ return String(b.date).localeCompare(String(a.date)); });
+      document.getElementById('list-meta').textContent = '按录入时间 · 共 ' + VIEW.length + ' 个';
+    }
+    render();
+    renderMap();
+  }
+
+  function render(){
+    if (!VIEW.length){
+      elList.innerHTML = '<div class="empty">没有符合条件的社区，换个关键词或清空筛选试试</div>';
+      return;
+    }
+    var html = VIEW.map(function(it){
+      var p = PREC[it.precision] || ['—',''];
+      var tcl = TYPE_CLS[it.type] || 'b2';
+      var d = it._d;
+      return '<article class="card" data-id="' + esc(it.id) + '">' +
+        '<div class="c-top">' +
+          '<div class="c-name">' + esc(it.name) + '</div>' +
+          (d != null ? '<div class="c-dist">' + G.fmtDist(d) + '</div>' : '') +
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px">' +
+          '<span class="badge ' + tcl + '">' + esc(it.type) + '</span>' +
+          '<span class="badge ' + p[1] + '">' + p[0] + '</span>' +
+          '<span class="badge">' + esc(it.province || '') + (it.city && it.city !== it.province ? ' · ' + esc(it.city) : '') + '</span>' +
+        '</div>' +
+        '<div class="c-addr">' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7d8fab" stroke-width="2.2">' +
+          '<path d="M12 21s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>' +
+          esc(it.address) + '</div>' +
+        (it.note ? '<div class="c-note">' + esc(it.note) + '</div>' : '') +
+        '<div class="c-foot">' +
+          '<span>' + esc(it.source) + '</span><span>·</span><span>' + esc(it.date) + '</span>' +
+          (it.sourceUrl ? '<a href="' + esc(it.sourceUrl) + '" target="_blank" rel="noopener">查看来源 →</a>' : '') +
+        '</div>' +
+      '</article>';
+    }).join('');
+    elList.innerHTML = html;
+  }
+
+  /* ---------- 地图（合规：腾讯地图 GL JS） ---------- */
+  function initMap(){
+    return G.loadTMap().then(function(TMap){
+      map = new TMap.Map('map', {
+        center: new TMap.LatLng(34.5, 108.9),
+        zoom: 4.4,
+        pitch: 0,
+        viewMode: '2D'
+      });
+      markers = new TMap.MultiMarker({
+        map: map,
+        styles: {
+          default: new TMap.MarkerStyle({ width: 14, height: 20, anchor: { x: 7, y: 20 } }),
+          me:      new TMap.MarkerStyle({ width: 18, height: 24, anchor: { x: 9, y: 24 } })
+        },
+        geometries: []
+      });
+      document.getElementById('map-meta').textContent = 'TENCENT MAPS · 合规底图 · 已加载';
+      renderMap();
+    }).catch(function(err){
+      showMapFallback(err && err.message === 'NO_KEY' ? 'nokey' : 'fail');
+    });
+  }
+
+  function showMapFallback(kind){
+    var box = elMapFb;
+    var mk = document.getElementById('map');
+    if (mk) mk.style.display = 'none';
+    box.className = 'map-fallback show';
+    if (kind === 'nokey'){
+      box.innerHTML =
+        '<h4>地图底图需站点维护者配置腾讯位置服务 Key</h4>' +
+        '<div>为保证合规，本页不内置任何地图 Key（前端明文 Key 有被窃取风险）。' +
+        '清单与距离排序<b>不依赖地图，已正常可用</b>。启用底图的步骤：</div>' +
+        '<ol>' +
+          '<li>在 <a href="https://lbs.qq.com/" target="_blank" rel="noopener">腾讯位置服务</a> 注册并创建应用，申请 WebService/JavaScript GL 类型 Key</li>' +
+          '<li>在 Key 的「域名白名单」中填入本站域名（如 <code>wxzhongwang.github.io</code>），避免被他人盗用</li>' +
+          '<li>在 <code>community.html</code> 与首页中，将 <code>window.OPCGEO_TMAP_KEY</code> 设为你的 Key</li>' +
+        '</ol>' +
+        '<div style="color:var(--muted)">未配置 Key 时，右侧清单、精度分级、距离排序功能均不受影响。</div>';
+    } else {
+      box.innerHTML = '<h4>地图加载失败</h4><div>可能是网络或 SDK 限制。清单与距离排序不受影响，可正常使用。</div>';
+    }
+  }
+
+  function renderMap(){
+    if (!map || !markers) return;
+    var g = VIEW.filter(function(it){ return it.lat && it.lng; }).map(function(it){
+      return {
+        id: it.id,
+        styleId: 'default',
+        position: new window.TMap.LatLng(it.lat, it.lng),
+        properties: { title: it.name }
+      };
+    });
+    markers.setGeometries(g);
+    if (MY && window.TMap){
+      if (!meMarker){
+        meMarker = new window.TMap.MultiMarker({
+          map: map,
+          styles: { me: new window.TMap.MarkerStyle({ width: 18, height: 24, anchor: { x: 9, y: 24 } }) },
+          geometries: []
+        });
+      }
+      meMarker.setGeometries([{
+        id: 'me', styleId: 'me',
+        position: new window.TMap.LatLng(MY.lat, MY.lng),
+        properties: { title: '我的位置' }
+      }]);
+      map.setCenter(new window.TMap.LatLng(MY.lat, MY.lng));
+      map.setZoom(10);
+    }
+  }
+
+  /* ---------- 定位 ---------- */
+  function locate(){
+    if (!navigator.geolocation){
+      setState('浏览器不支持定位，请选城市', 'warn');
+      return;
+    }
+    setState('定位中…', 'warn');
+    navigator.geolocation.getCurrentPosition(function(pos){
+      MY = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      setState('已定位 · 按距离排序', 'ok');
+      applyFilter();
+    }, function(err){
+      var msg = err.code === 1 ? '已拒绝定位，请选城市' :
+                err.code === 2 ? '定位不可用，请选城市' : '定位超时，请选城市';
+      setState(msg, 'warn');
+      elSelCity.focus();
+    }, { enableHighAccuracy: false, timeout: 9000, maximumAge: 300000 });
+  }
+
+  /* ---------- 启动 ---------- */
+  G.getJSON('communities.json').then(function(d){
+    ALL = (d.items || []);
+    document.getElementById('n-comm').textContent = ALL.length;
+    document.getElementById('f-upd').textContent = (d.meta && d.meta.updated) || '—';
+    var cities = {};
+    ALL.forEach(function(it){ if (it.city) cities[it.city] = (cities[it.city] || 0) + 1; });
+    Object.keys(cities).sort(function(a,b){ return cities[b] - cities[a]; }).forEach(function(c){
+      var o = document.createElement('option');
+      o.value = c; o.textContent = c + '（' + cities[c] + '）';
+      elSelCity.appendChild(o);
+    });
+    applyFilter();
+    initMap();
+  }).catch(function(e){
+    elList.innerHTML = '<div class="empty">社区数据加载失败（' + esc(e.message) +
+      '），请检查 communities.json 是否可访问</div>';
+  });
+
+  document.getElementById('btn-geo').addEventListener('click', locate);
+  elSelCity.addEventListener('change', function(){ if (elSelCity.value) setState('按城市：' + elSelCity.value); applyFilter(); });
+  elSelType.addEventListener('change', applyFilter);
+  elQ.addEventListener('input', applyFilter);
+})();
+</script>
+</body>
+</html>
