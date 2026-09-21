@@ -3,7 +3,10 @@ name: Label OPC registration issues
 # 目的：确保「找人」页面能稳定拉到登记数据。
 # 前台 people.html 依赖 `opc-profile` 标签抓取 Issue；
 # Issue 表单虽然在模板里声明了 labels，但复用「空白 Issue」提交时不会带上，
-# 所以在服务端再兜一层：识别到登记特征就补标签。
+# 所以在服务端再兜一层：识别到登记特征就补标签（标签不存在时先创建）。
+#
+# 说明：这里用 Actions 自带的 GITHUB_TOKEN（permissions: issues: write），
+# 因此不依赖任何个人 PAT 的 Issues 权限。
 
 on:
   issues:
@@ -16,10 +19,11 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - name: Add opc-profile label when registration markers found
+      - name: Ensure label exists, then apply when registration markers found
         uses: actions/github-script@v7
         with:
           script: |
+            const LABEL = 'opc-profile';
             const issue = context.payload.issue;
             const body = issue.body || '';
             const title = issue.title || '';
@@ -28,10 +32,25 @@ jobs:
               body.includes('### 昵称') ||
               body.includes('### OPC 简介') ||
               body.includes('### 联系方式或站点');
+
+            // 先把标签建出来（已存在会返回 422，忽略即可）
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: LABEL,
+                color: '0e8a16',
+                description: 'OPC 创业者登记（「找人」页面据此拉取）'
+              });
+              core.info(`created label ${LABEL}`);
+            } catch (e) {
+              if (e.status !== 422) core.info(`createLabel skipped: ${e.status}`);
+            }
+
             if (!isRegistration) return;
 
             const labels = new Set((issue.labels || []).map(l => l.name));
-            if (labels.has('opc-profile')) {
+            if (labels.has(LABEL)) {
               core.info('already labeled');
               return;
             }
@@ -39,6 +58,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              labels: ['opc-profile']
+              labels: [LABEL]
             });
             core.info(`labeled #${issue.number}`);
