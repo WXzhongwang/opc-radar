@@ -79,9 +79,9 @@ select:focus,input[type=search]:focus{border-color:var(--cyan);box-shadow:0 0 0 
 .geo-state.warn{color:var(--amber);border-color:rgba(251,191,36,.34)}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;margin:20px 0 40px}
 @media(max-width:960px){.layout{grid-template-columns:1fr}}
-#map{width:100%;height:520px;border-radius:var(--radius);border:1px solid var(--line);
+#map{width:100%;aspect-ratio:1000/748;border-radius:var(--radius);border:1px solid var(--line);
   background:#080d18;overflow:hidden}
-@media(max-width:960px){#map{height:360px}}
+@media(max-width:960px){#map{aspect-ratio:1000/748}}
 .map-fallback{display:none;padding:18px;border-radius:var(--radius);border:1px dashed var(--line-2);
   background:rgba(10,16,30,.7);font-size:13px;color:var(--text-2)}
 .map-fallback.show{display:block}
@@ -181,7 +181,7 @@ footer a{color:var(--blue);text-decoration:none}
 <div class="wrap">
   <div class="layout">
     <div>
-      <div class="sec-head"><h2>地图分布</h2><div class="meta" id="map-meta">TENCENT MAPS · 合规底图</div></div>
+      <div class="sec-head"><h2>地图分布</h2><div class="meta" id="map-meta">矢量示意图 · 零 Key 零配额</div></div>
       <div id="map"></div>
       <div class="map-fallback" id="map-fb"></div>
     </div>
@@ -197,7 +197,9 @@ footer a{color:var(--blue);text-decoration:none}
     <span class="badge b1">园区级</span> 明确到园区或载体名；<span class="badge b2">区县级</span> /
     <span class="badge b2">城市级</span> 只核实到行政区，坐标为<b>行政区中心点近似值</b>，用于距离估算，
     <b>不是门牌级定位</b>。签约入驻前请以来源公告与实际运营方为准。<br>
-    <b>② 底图合规</b>：地图使用腾讯位置服务（腾讯地图）GL JS，符合境内地图服务合规要求，不使用任何境外地图源。<br>
+    <b>② 地图形式</b>：地图是<b>矢量示意图</b>（非真实底图）——只用于看「社区大致分布在哪些省市」，
+    边界数据含台湾省、香港、澳门与南海诸岛，符合国家版图完整性要求；
+    不加载任何地图瓦片服务，因此<b>不需要 Key、不消耗调用配额、断网也能用</b>。需要精确导航请以地址为准。<br>
     <b>③ 你的位置不会被上传</b>：定位只在你的浏览器内存里参与距离计算，<b>不写入本地存储、不上传服务器、不入库</b>，
     刷新即失效（符合《个人信息保护法》对位置信息的要求）。<br>
     <b>④ 数据来源</b>：全部来自各条情报原文（政府网站、党媒、地方媒体等公开报道），每条附来源链接。
@@ -213,13 +215,15 @@ footer a{color:var(--blue);text-decoration:none}
   </footer>
 </div>
 
+<script src="chinamap.js"></script>
+<script src="map-svg.js"></script>
 <script src="geo.js"></script>
 <script>
 (function(){
   'use strict';
   var G = window.OPCGEO;
   var ALL = [], VIEW = [], MY = null;      // MY 仅存内存，不落盘
-  var map = null, markers = null, meMarker = null;
+  var cnMap = null;                        // 简版示意图实例
 
   var elList = document.getElementById('list');
   var elState = document.getElementById('geo-state');
@@ -306,27 +310,38 @@ footer a{color:var(--blue);text-decoration:none}
     elList.innerHTML = html;
   }
 
-  /* ---------- 地图（合规：腾讯地图 GL JS） ---------- */
+  /* ---------- 地图（矢量示意图：零 Key、零配额、零外部依赖） ---------- */
   function initMap(){
-    return G.loadTMap().then(function(TMap){
-      map = new TMap.Map('map', {
-        center: new TMap.LatLng(34.5, 108.9),
-        zoom: 4.4,
-        pitch: 0,
-        viewMode: '2D'
-      });
-      markers = new TMap.MultiMarker({
-        map: map,
-        styles: {
-          default: new TMap.MarkerStyle({ width: 14, height: 20, anchor: { x: 7, y: 20 } }),
-          me:      new TMap.MarkerStyle({ width: 18, height: 24, anchor: { x: 9, y: 24 } })
-        },
-        geometries: []
-      });
-      document.getElementById('map-meta').textContent = 'TENCENT MAPS · 合规底图 · 已加载';
-      renderMap();
-    }).catch(function(err){
-      showMapFallback(err && err.message === 'NO_KEY' ? 'nokey' : 'fail');
+    if (!window.OPCMAP || !window.OPCMAP.ready()){
+      showMapFallback('nodata');
+      return;
+    }
+    document.getElementById('map-meta').textContent = '矢量示意图 · 零 Key 零配额 · 已加载';
+    drawMap();
+  }
+
+  function drawMap(){
+    var box = document.getElementById('map');
+    if (!box || !window.OPCMAP.ready()) return;
+    var src = (VIEW.length ? VIEW : ALL).filter(function(it){ return it.lat && it.lng; });
+    var showLabel = MY ? 1 : 99;          /* 定位后只标注离你最近的几个 */
+    cnMap = window.OPCMAP.render(box, {
+      values: {},
+      points: src.map(function(it){
+        return { id: it.id, name: it.name, city: MY ? it.name : '', n: 1, lat: it.lat, lng: it.lng };
+      }),
+      me: MY,
+      bubble: [3.6, 0],
+      labelFrom: showLabel,
+      maxLabels: MY ? 5 : 0,
+      onPick: function(x){
+        var card = elList.querySelector('.card[data-id="' + x.id + '"]');
+        if (card){
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.outline = '1px solid var(--cyan)';
+          setTimeout(function(){ card.style.outline = ''; }, 1600);
+        }
+      }
     });
   }
 
@@ -335,49 +350,13 @@ footer a{color:var(--blue);text-decoration:none}
     var mk = document.getElementById('map');
     if (mk) mk.style.display = 'none';
     box.className = 'map-fallback show';
-    if (kind === 'nokey'){
-      box.innerHTML =
-        '<h4>地图底图需站点维护者配置腾讯位置服务 Key</h4>' +
-        '<div>为保证合规，本页不内置任何地图 Key（前端明文 Key 有被窃取风险）。' +
-        '清单与距离排序<b>不依赖地图，已正常可用</b>。启用底图的步骤：</div>' +
-        '<ol>' +
-          '<li>在 <a href="https://lbs.qq.com/" target="_blank" rel="noopener">腾讯位置服务</a> 注册并创建应用，申请 WebService/JavaScript GL 类型 Key</li>' +
-          '<li>在 Key 的「域名白名单」中填入本站域名（如 <code>wxzhongwang.github.io</code>），避免被他人盗用</li>' +
-          '<li>在 <code>community.html</code> 与首页中，将 <code>window.OPCGEO_TMAP_KEY</code> 设为你的 Key</li>' +
-        '</ol>' +
-        '<div style="color:var(--muted)">未配置 Key 时，右侧清单、精度分级、距离排序功能均不受影响。</div>';
-    } else {
-      box.innerHTML = '<h4>地图加载失败</h4><div>可能是网络或 SDK 限制。清单与距离排序不受影响，可正常使用。</div>';
-    }
+    box.innerHTML = '<h4>示意图数据未加载</h4>' +
+      '<div> chinamap.js 未能加载（' + esc(String(kind)) + '）。' +
+      '右侧清单、精度分级与距离排序<b>不依赖地图，已正常可用</b>。</div>';
   }
 
   function renderMap(){
-    if (!map || !markers) return;
-    var g = VIEW.filter(function(it){ return it.lat && it.lng; }).map(function(it){
-      return {
-        id: it.id,
-        styleId: 'default',
-        position: new window.TMap.LatLng(it.lat, it.lng),
-        properties: { title: it.name }
-      };
-    });
-    markers.setGeometries(g);
-    if (MY && window.TMap){
-      if (!meMarker){
-        meMarker = new window.TMap.MultiMarker({
-          map: map,
-          styles: { me: new window.TMap.MarkerStyle({ width: 18, height: 24, anchor: { x: 9, y: 24 } }) },
-          geometries: []
-        });
-      }
-      meMarker.setGeometries([{
-        id: 'me', styleId: 'me',
-        position: new window.TMap.LatLng(MY.lat, MY.lng),
-        properties: { title: '我的位置' }
-      }]);
-      map.setCenter(new window.TMap.LatLng(MY.lat, MY.lng));
-      map.setZoom(10);
-    }
+    drawMap();
   }
 
   /* ---------- 定位 ---------- */
