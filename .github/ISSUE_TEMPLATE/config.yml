@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 先看贡献指南
+    url: https://github.com/WXzhongwang/opc-radar/blob/main/CONTRIBUTING.md
+    about: 登记 OPC、纠错社区、投递情报的完整说明，动手前建议先读一遍。
+  - name: 投递情报线索（不写代码也能投）
+    url: https://github.com/WXzhongwang/opc-radar/issues/new?labels=情报线索
+    about: 发现了一条值得收录的 OPC 资讯？贴链接 + 一句话说明即可，由维护者整理入库。
+  - name: 站点访问
+    url: https://wxzhongwang.github.io/opc-radar/
+    about: OPC 情报站线上站点：资讯流 / 找社区 / 找人。
