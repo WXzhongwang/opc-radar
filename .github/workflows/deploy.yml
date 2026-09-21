@@ -1,0 +1,62 @@
+name: Deploy OPC Radar to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Assemble static site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          # 页面
+          cp index.html     _site/index.html
+          cp community.html _site/community.html
+          cp people.html    _site/people.html
+          # 数据
+          cp data.json        _site/data.json
+          cp communities.json _site/communities.json
+          cp people.json      _site/people.json
+          # 共享脚本
+          cp geo.js _site/geo.js
+          # 仓库文档（供页面内链接与检索）
+          cp CONTRIBUTING.md _site/CONTRIBUTING.md
+          # 关闭 Jekyll 处理，避免下划线开头文件被忽略
+          touch _site/.nojekyll
+          echo "----- artifacts -----"
+          ls -lh _site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
