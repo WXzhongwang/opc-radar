@@ -17,23 +17,39 @@ OPC（One Person Company，一人公司）指 AI 时代以「一人 + 智能体�
 ## 特性
 
 - **九维分类聚合**：政策动向、社区落地、创业案例、生态工具、研究报告、赛事活动、风险观察、全球视野、趋势观察，每类独立配色与筛选。
+- **三页协同**：资讯流（`index.html`）+ [找社区](community.html) + [找人](people.html)，顶部导航直达。
+- **地理分布看板**：按地区汇总情报数量，腾讯地图气泡标注 + 城市排行双视图，点击排行可定位城市。
+- **找社区 · 按距离排序**：授权定位后社区列表由近到远排序（球面直线距离），未授权可按城市浏览；每条附来源链接与**地址精度分级**。
+- **找人 · 开放登记簿**：收录社区主动登记的 OPC，支持 GitHub Issue 表单与 Pull Request 两种登记方式，公开范围由登记者自定。
 - **双视图浏览**：卡片网格与时间线视图一键切换，支持全文搜索、分类筛选与热度 TOP 10 排行。
-- **零外部依赖**：单文件 `index.html`，不引用任何 CDN、字体或 JS 库，断网与内网环境同样可用。
-- **全端响应式**：覆盖 1080 / 900 / 640 / 400px 四档断点与横屏矮屏场景，16 档视口实测零横向溢出。
-- **纯静态部署**：数据与页面分离，`data.json` 为唯一数据源，推送即发布，无需构建步骤。
-- **零数据采集**：无后端、无注册、无表单；统计脚本由访客浏览器直连服务商，可一键关闭。
+- **零构建静态部署**：无打包、无框架、无数据库，数据与页面分离，推送即发布。
+- **零数据采集**：无后端、无注册、无表单落库；定位信息只在本机内存参与计算，统计脚本可一键关闭。
 
 ## 目录结构
 
 ```
 opc-radar/
-├── index.html                     # 站点页面（单文件，零外部依赖）
+├── index.html                     # 资讯流 + 数据洞察 + 地理分布
+├── community.html                 # 找社区（定位 + 距离排序 + 地图）
+├── people.html                    # 找人（OPC 登记簿 + 登记引导）
+├── geo.js                         # 共享地理工具（城市坐标表 / 距离 / 合规地图加载器）
 ├── data.json                      # 情报数据（唯一数据源）
+├── communities.json               # 社区登记簿（名称 / 地址 / 坐标 / 精度 / 来源）
+├── people.json                    # OPC 创业者登记簿（PR 方式维护）
+├── CONTRIBUTING.md                # 贡献指南（登记、纠错、投递、部署注意）
 ├── README.md
 └── .github/
+    ├── ISSUE_TEMPLATE/
+    │   ├── opc-register.yml       # OPC 登记表单（自动打 opc-profile 标签）
+    │   ├── community-fix.yml      # 社区信息纠错表单
+    │   └── config.yml             # 模板选择器配置
+    ├── PULL_REQUEST_TEMPLATE.md
     └── workflows/
-        └── deploy.yml             # push main 自动部署 GitHub Pages
+        ├── deploy.yml             # push main 自动部署 GitHub Pages
+        └── label-opc-issue.yml    # 兜底补打 opc-profile 标签
 ```
+
+> ⚠️ 新增页面或数据文件后，**必须同步更新 `.github/workflows/deploy.yml` 的 `_site` 拷贝清单**，否则不会部署到 Pages。
 
 ## 设计要点
 
@@ -116,6 +132,48 @@ git add -A
 git commit -m "chore(data): 新增 N 条 OPC 情报"
 git push origin main
 ```
+
+## 找社区 · 找人 · 地图合规
+
+### 三个页面
+
+| 页面 | 作用 | 数据源 |
+| --- | --- | --- |
+| `index.html` | 资讯流、数据洞察、地理分布（按地区汇总数量） | `data.json` |
+| `community.html` | 找社区：定位后按距离由近到远排序 + 地图打点 | `communities.json` |
+| `people.html` | 找人：已登记 OPC 卡片 + 登记引导 | `people.json` + GitHub Issues |
+
+### 地图合规（务必遵守）
+
+- **只用合规地图源**：统一使用**腾讯位置服务（腾讯地图）GL JS**。禁止 Google Maps、Apple Maps、Bing 海外版、Mapbox，
+  以及 Leaflet 直连 OpenStreetMap 等任何不合规来源。
+- **不内置任何真实 Key**：前端明文 Key 可被嗅探，因此仓库内只保留占位符。
+  启用真图底图：① 在 [腾讯位置服务](https://lbs.qq.com/) 申请 JavaScript GL 类型 Key；
+  ② 在 Key 的「域名白名单」填入 `wxzhongwang.github.io`（个人使用至少做到这一步，避免被他人盗用）；
+  ③ 在页面中设置 `window.OPCGEO_TMAP_KEY = "你的Key"`。
+- **未配置 Key 时自动降级**：地图区域会显示配置指引，城市汇总、排行与距离排序**不依赖底图**，功能完整可用。
+- **疆域与敏感点**：底图与标注由合规服务商提供，不对国界、台湾、南海诸岛等要素自行绘制或改写；
+  不标注军事禁区、涉密单位与未公开的敏感坐标。
+- **坐标精度诚实标注**：`communities.json` 的 `lat`/`lng` 为行政区或园区中心点近似值，**不是门牌坐标**，
+  仅用于距离估算与分布示意；每条记录带 `precision` 字段（`building` / `park` / `district` / `city`），页面上以徽章明示。
+
+### 定位与隐私
+
+- 浏览器定位（`navigator.geolocation`）的结果**只存在于页面内存**中，用于本地计算直线距离；
+  **不写入 localStorage / Cookie，不上传服务器，不入库**，刷新即失效。
+- 符合《个人信息保护法》对位置信息的处理要求：不收集、不存储、不公开他人位置数据。
+- `communities.json` 收录的是**公开机构场所**（政府与媒体已公开报道的社区），非个人信息。
+
+### OPC 登记流程
+
+1. **Issue 表单（推荐）**：打开 [`opc-register.yml`](.github/ISSUE_TEMPLATE/opc-register.yml) 表单填写提交，
+   模板自带 `opc-profile` 标签；`.github/workflows/label-opc-issue.yml` 会兜底补打标签。
+2. **Pull Request**：在 `people.json` 的 `items` 数组末尾追加一条对象（`id` 留空，合并时分配）。
+3. `people.html` 启动时读取 `people.json`，并调用 GitHub Issues API 拉取带 `opc-profile` 标签的公开 Issue，两者合并去重后展示。
+
+> 未登录状态调用 GitHub API 有 **每小时 60 次** 的限额。超限时页面会提示，`people.json` 中的登记不受影响。
+
+登记字段与注意事项见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 本地预览
 
