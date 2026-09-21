@@ -1,0 +1,96 @@
+name: OPC 登记（一人公司创业者登记簿）
+description: 把自己登记的 OPC 登记簿上——填写简介与联系方式或站点，通过后会在「找人」页面展示
+title: "[OPC 登记] "
+labels: ["opc-profile", "登记"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 登记前请先读这三条
+
+        1. **登记 = 公开发布**。本仓库是公开仓库，你在下面填写的内容会对全网可见，并保留在 Issue 历史中。
+        2. **不要填敏感信息**。请不要填写手机号、身份证号、详细住址、客户名单等；城市**只写到市级**即可。
+        3. **完全免费**。本站只做信息聚合，不收费、不背书、不参与交易撮合。凡以「付费入册」「保证对接订单」为名收费的均与本站无关。
+
+        提交后维护者会核实并把它同步到 [`people.json`](../blob/main/people.json)，随后展示在
+        [找人页面](https://wxzhongwang.github.io/opc-radar/people.html)。想撤回随时在本 Issue 里说一声即可。
+
+  - type: input
+    id: name
+    attributes:
+      label: 昵称 / 品牌名
+      description: 可以是化名、品牌名或团队名，不要求真实姓名。
+      placeholder: 例如：纸猴子 / 一人工作室 / Alex
+    validations:
+      required: true
+
+  - type: textarea
+    id: intro
+    attributes:
+      label: OPC 简介
+      description: 40–120 字。说清楚三件事：你做什么、为谁解决什么问题、现在做到什么程度。
+      placeholder: |
+        例如：一个人开发 AI 作文批改工具「作文说」，面向中小学语文老师。
+        拍照上传即出批改报告，目前用户约 1.5 万，靠订阅制覆盖成本。
+    validations:
+      required: true
+
+  - type: input
+    id: track
+    attributes:
+      label: 赛道
+      description: 一句话概括你的方向。
+      placeholder: 例如：内容创作 / 电商出海 / 垂直智能体 / 设计服务 / 开发者工具 / 咨询交付
+    validations:
+      required: true
+
+  - type: input
+    id: city
+    attributes:
+      label: 所在城市
+      description: 只写到城市即可，请不要填详细地址。
+      placeholder: 例如：杭州
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: 当前阶段
+      description: 选最接近的一个。
+      options:
+        - 想法期
+        - 已上线
+        - 已营收
+        - 已盈利
+    validations:
+      required: true
+
+  - type: input
+    id: contact
+    attributes:
+      label: 联系方式或站点
+      description: 至少填一项。建议优先留公开站点（个人主页 / GitHub / 产品链接），比私人邮箱更安全。
+      placeholder: 例如：https://your-site.example 或 you@example.com
+    validations:
+      required: true
+
+  - type: input
+    id: tags
+    attributes:
+      label: 关键词标签
+      description: 3–6 个，用逗号分隔，方便别人检索到你。
+      placeholder: 例如：AI 写作, 独立开发, 教育
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 公开同意
+      description: 请确认后再提交。
+      options:
+        - label: 我确认以上信息由我本人填写，且同意在本仓库与「找人」页面公开这些信息
+          required: true
+        - label: 我确认没有填写他人信息，也没有包含手机号、身份证号、详细住址等敏感信息
+          required: true
