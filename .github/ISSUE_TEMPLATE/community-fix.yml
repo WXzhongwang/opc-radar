@@ -1,0 +1,60 @@
+name: 社区信息纠错 / 补充
+description: 报告「找社区」页面里的地址、坐标、运营状态有误，或补充我们还没收录的 OPC 社区
+title: "[社区纠错] "
+labels: ["community", "纠错"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 谢谢帮忙校准
+
+        「找社区」页面的每条记录都附了原报道链接，但社区会搬迁、会改名、也会停止运营。
+        如果你发现信息过期或有误，请在这里告诉我们。
+
+        **重要**：请务必附上**可核实的公开来源**（政府网站、党媒、地方媒体的报道链接）。
+        没有来源的修改我们无法采纳——本站宁可少收录，也不编造地址。
+
+  - type: input
+    id: community
+    attributes:
+      label: 涉及哪个社区
+      description: 填「找社区」页面上的社区名称；如果是新增，请填你想补充的社区名称。
+      placeholder: 例如：仙林科创策源 OPC 社区
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 问题类型
+      options:
+        - 地址或所在区县有误
+        - 坐标偏差较大，距离排序不准
+        - 社区已停止运营 / 已搬迁
+        - 名称已变更
+        - 补充我们尚未收录的社区
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: 具体情况
+      description: 请说明「现在写的是什么」「正确的是什么」。
+      placeholder: |
+        例如：
+        - 页面现写：杭州市拱墅区
+        - 实际应为：杭州市上城区
+        - 依据：运营方 2026-09 公告（见下方链接）
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: 可核实的公开来源链接
+      description: 必须是公开可访问的政府网站 / 党媒 / 地方媒体报道链接。
+      placeholder: https://
+    validations:
+      required: true
