@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04060d">
+<meta name="color-scheme" content="dark">
+<meta name="format-detection" content="telephone=no">
+<title>找人 · OPC 情报站</title>
+<meta name="description" content="OPC 创业者登记簿：看看谁也在一个人开公司。支持一键登记你的 OPC 简介与联系方式，公开与可见范围完全由你决定。">
+<link rel="canonical" href="https://wxzhongwang.github.io/opc-radar/people.html">
+<style>
+:root{
+  --bg:#04060d;--panel:rgba(12,18,33,.72);--line:rgba(96,165,250,.14);--line-2:rgba(96,165,250,.28);
+  --cyan:#22d3ee;--violet:#a78bfa;--blue:#60a5fa;--green:#34d399;--amber:#fbbf24;
+  --rose:#fb7185;--orange:#fb923c;--teal:#2dd4bf;--indigo:#818cf8;
+  --text:#e8eefb;--text-2:#b6c4dd;--muted:#7d8fab;--radius:16px;
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+::selection{background:rgba(34,211,238,.3);color:#fff}
+a{color:var(--cyan)}
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(900px 520px at 12% -6%,rgba(34,211,238,.14),transparent 62%),
+             radial-gradient(760px 480px at 88% 4%,rgba(139,92,246,.14),transparent 62%),
+             radial-gradient(900px 600px at 50% 108%,rgba(59,130,246,.10),transparent 66%)}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(96,165,250,.055) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(96,165,250,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 90% 62% at 50% 34%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 62% at 50% 34%,#000 30%,transparent 100%)}
+.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 22px}
+header{position:sticky;top:0;z-index:60;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:linear-gradient(180deg,rgba(4,6,13,.94),rgba(4,6,13,.66));border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.4px;font-size:16px;text-decoration:none;color:var(--text)}
+.logo{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));box-shadow:0 0 22px rgba(34,211,238,.42);
+  font-family:var(--mono);font-size:13px;color:#04060d;font-weight:900}
+.brand small{display:block;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:2.2px;font-family:var(--mono)}
+.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nav-links a{color:var(--text-2);text-decoration:none;font-size:13px;padding:7px 12px;border-radius:9px;transition:.2s}
+.nav-links a:hover{color:var(--cyan);background:rgba(34,211,238,.09)}
+.nav-links a.on{color:#fff;background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(167,139,250,.2));
+  box-shadow:inset 0 0 0 1px rgba(34,211,238,.34)}
+.hero{padding:52px 0 8px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:2.6px;color:var(--cyan);border:1px solid rgba(34,211,238,.3);
+  background:rgba(34,211,238,.06);padding:7px 15px;border-radius:24px;margin-bottom:20px}
+h1{font-size:clamp(28px,5vw,48px);line-height:1.1;font-weight:900;letter-spacing:-1px;margin-bottom:16px}
+.grad{background:linear-gradient(100deg,#22d3ee,#60a5fa 34%,#a78bfa 68%,#f0abfc);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{max-width:820px;color:var(--text-2);font-size:15px}
+.lede b{color:var(--cyan);font-weight:600}
+
+/* 登记引导大卡 */
+.reg{margin:26px 0 34px;padding:24px 26px;border-radius:20px;position:relative;overflow:hidden;
+  border:1px solid rgba(34,211,238,.34);
+  background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(167,139,250,.10)),var(--panel);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.reg::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(600px 220px at 8% 0%,rgba(34,211,238,.16),transparent 60%)}
+.reg h2{font-size:20px;font-weight:850;margin-bottom:8px;position:relative}
+.reg p{font-size:13.5px;color:var(--text-2);max-width:900px;position:relative}
+.reg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:13px;margin-top:17px;position:relative}
+.reg-way{padding:15px 16px;border-radius:14px;border:1px solid var(--line);background:rgba(8,12,24,.6)}
+.reg-way h3{font-size:14.5px;font-weight:750;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.reg-way .n{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04060d;font-size:11px;font-weight:900;font-family:var(--mono)}
+.reg-way p{font-size:12.5px;color:var(--muted)}
+.reg-way .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.btn{display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer;font-family:var(--sans);
+  font-size:13px;font-weight:600;padding:9px 15px;border-radius:10px;text-decoration:none;transition:.18s;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));color:#04060d}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn.ghost{background:rgba(10,16,30,.86);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{color:var(--cyan);box-shadow:inset 0 0 0 1px var(--line-2)}
+.btn.sm{font-size:12px;padding:7px 12px}
+
+/* 字段清单 */
+.fields{margin-top:15px;position:relative;border:1px solid var(--line);border-radius:13px;
+  background:rgba(8,12,24,.5);overflow:hidden}
+.fields summary{cursor:pointer;padding:12px 16px;font-size:13px;font-weight:650;color:var(--text-2);
+  list-style:none;display:flex;align-items:center;gap:8px}
+.fields summary::-webkit-details-marker{display:none}
+.fields summary::before{content:"▸";color:var(--cyan);font-size:12px;transition:.2s}
+.fields[open] summary::before{transform:rotate(90deg)}
+.fields .fb{padding:2px 16px 16px;font-size:12.5px;color:var(--muted)}
+.fields table{width:100%;border-collapse:collapse;margin:6px 0 12px}
+.fields th,.fields td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+.fields th{color:var(--text-2);font-weight:650;font-size:12px;white-space:nowrap;width:104px}
+.fields td code{font-family:var(--mono);font-size:12px;color:var(--violet)}
+pre{background:rgba(4,6,13,.85);border:1px solid var(--line);border-radius:11px;padding:13px 14px;
+  overflow:auto;font-family:var(--mono);font-size:12px;color:#b7c6e0;line-height:1.65;margin:8px 0 10px}
+pre .k{color:var(--cyan)}
+pre .s{color:var(--green)}
+
+.toolbar{padding:6px 0;margin:26px 0 6px}
+.tb-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=search],select{background:rgba(10,16,30,.86);border:1px solid var(--line);color:var(--text);
+  font-size:13px;padding:10px 12px;border-radius:11px;outline:none;font-family:var(--sans)}
+input[type=search]:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+select{cursor:pointer}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 13px;flex-wrap:wrap}
+.sec-head h2{font-size:17px;font-weight:800}
+.sec-head .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.p-card{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);
+  border-radius:15px;padding:17px 18px;transition:.2s;display:flex;flex-direction:column}
+.p-card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.p-card::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--violet),transparent)}
+.avatar{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;
+  font-family:var(--mono);font-weight:900;font-size:15px;color:#04060d;
+  background:linear-gradient(135deg,var(--cyan),var(--violet))}
+.p-head{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.p-name{font-size:15.5px;font-weight:780;line-height:1.35}
+.p-sub{font-size:11.5px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.p-intro{font-size:13px;color:var(--text-2);flex:1;margin-bottom:11px}
+.p-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+.tg{font-family:var(--mono);font-size:10.5px;color:var(--violet);background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.24);padding:2.5px 8px;border-radius:20px}
+.badge{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border-radius:20px;
+  border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.src{color:var(--blue);border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.08)}
+.p-foot{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;
+  border-top:1px solid var(--line);padding-top:11px;font-size:12px}
+.p-foot a{text-decoration:none;color:var(--cyan);font-weight:600}
+.p-foot a:hover{text-decoration:underline}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13.5px;
+  border:1px dashed var(--line);border-radius:15px;grid-column:1/-1}
+.notice{margin:12px 0 0;padding:11px 14px;border-radius:11px;font-size:12.5px;
+  border:1px solid rgba(251,191,36,.3);background:rgba(251,191,36,.07);color:var(--amber)}
+.note{margin:34px 0 40px;padding:15px 18px;border-radius:14px;border:1px solid var(--line);
+  background:rgba(10,16,30,.6);font-size:12.5px;color:var(--muted);line-height:1.85}
+.note b{color:var(--text-2)}
+.note .h{color:var(--amber);font-weight:700}
+footer{border-top:1px solid var(--line);padding:24px 0 34px;font-size:12px;color:var(--muted)}
+footer a{color:var(--blue);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div><div class="bg-grid"></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="./">
+      <div class="logo">OPC</div>
+      <div>OPC 情报站<small>OPC RADAR</small></div>
+    </a>
+    <div class="nav-links">
+      <a href="./">资讯流</a>
+      <a href="community.html">找社区</a>
+      <a href="people.html" class="on">找人</a>
+      <a href="https://github.com/WXzhongwang/opc-radar" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">FIND A PEER · OPC 创业者登记簿</div>
+    <h1>看看<span class="grad">谁也在一个人开公司</span></h1>
+    <p class="lede">
+      这里收录主动登记上来的 OPC：做什么、在哪个赛道、到什么阶段、怎么找到他。
+      公开什么、公开到什么程度，完全由你自己决定——<b>不想留联系方式也可以只留一个站点</b>。
+    </p>
+  </section>
+
+  <section class="reg">
+    <h2>把你的 OPC 登记上来</h2>
+    <p>两种方式任选，都通过 GitHub 完成，公开、可追溯、可随时撤回。登记后你会出现在下方列表里。</p>
+
+    <div class="reg-grid">
+      <div class="reg-way">
+        <h3><span class="n">1</span>提 Issue（最快，推荐）</h3>
+        <p>点开表单逐项填写即可，无需懂 Git。维护者核实后会合并进登记簿。</p>
+        <div class="acts">
+          <a class="btn" href="https://github.com/WXzhongwang/opc-radar/issues/new?template=opc-register.yml"
+             target="_blank" rel="noopener">打开登记表单 →</a>
+        </div>
+      </div>
+
+      <div class="reg-way">
+        <h3><span class="n">2</span>提 Pull Request（可批量 / 可改格式）</h3>
+        <p>直接编辑 <code style="font-family:var(--mono);font-size:12px;color:var(--violet)">people.json</code>，
+          在 <code style="font-family:var(--mono);font-size:12px;color:var(--violet)">items</code> 数组末尾追加一条，提交 PR。</p>
+        <div class="acts">
+          <a class="btn ghost sm" href="https://github.com/WXzhongwang/opc-radar/edit/main/people.json"
+             target="_blank" rel="noopener">在线编辑 people.json</a>
+          <button class="btn ghost sm" id="copy-snippet">复制 JSON 模板</button>
+        </div>
+      </div>
+    </div>
+
+    <details class="fields">
+      <summary>填写字段说明与 JSON 模板（点击展开）</summary>
+      <div class="fb">
+        <table>
+          <tr><th>name</th><td>昵称 / 品牌名 / 团队名。可以是化名，不要求真实姓名。</td></tr>
+          <tr><th>intro</th><td><b>必填</b>。40–120 字简介：你做什么、为谁解决什么问题、做到什么程度。</td></tr>
+          <tr><th>track</th><td>赛道，如 内容创作 / 电商出海 / 垂直智能体 / 设计服务 / 开发者工具 / 咨询交付。</td></tr>
+          <tr><th>city</th><td>所在城市。<b>只写到城市即可，不要填详细地址</b>。</td></tr>
+          <tr><th>stage</th><td>阶段：想法期 / 已上线 / 已营收 / 已盈利。</td></tr>
+          <tr><th>contact</th><td><b>必填</b>。联系方式<b>或</b>站点，至少一项：邮箱 / 个人主页 / GitHub / 产品链接。
+            建议优先留公开站点，避免把私人手机号写在公开仓库。</td></tr>
+          <tr><th>tags</th><td>3–6 个关键词，便于被检索到。</td></tr>
+          <tr><th>consent</th><td>必须为 <code>true</code>。表示你同意公开以上信息。</td></tr>
+        </table>
+        <pre id="snippet">{
+  "id": "",
+  "name": "你的昵称 / 品牌名",
+  "intro": "40-120 字：你做什么、为谁解决什么问题、做到什么程度。",
+  "track": "内容创作",
+  "city": "杭州",
+  "stage": "已营收",
+  "contact": "https://your-site.example 或 you@example.com",
+  "tags": ["AI 写作", "独立开发", "出海"],
+  "consent": true,
+  "addedAt": "2026-09-21"
+}</pre>
+        <div style="color:var(--muted)">
+          <b>id 不用自己填</b>（留空即可），合并时由维护者按现有最大序号 +1 分配。
+          提交前请把 <code>addedAt</code> 改成当天日期。
+        </div>
+      </div>
+    </details>
+  </section>
+</div>
+
+<div class="toolbar">
+  <div class="wrap tb-row">
+    <input type="search" id="q" placeholder="搜索昵称 / 赛道 / 城市 / 关键词…" style="flex:1;min-width:200px">
+    <select id="sel-track"><option value="">全部赛道</option></select>
+    <select id="sel-stage">
+      <option value="">全部阶段</option>
+      <option value="想法期">想法期</option>
+      <option value="已上线">已上线</option>
+      <option value="已营收">已营收</option>
+      <option value="已盈利">已盈利</option>
+    </select>
+    <span class="badge" id="cnt">0 位</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="sec-head">
+    <h2>已登记 OPC</h2>
+    <div class="meta" id="src-meta">数据源：people.json</div>
+  </div>
+  <div id="grid"></div>
+  <div id="notice"></div>
+
+  <div class="note">
+    <div class="h">先读这段，再决定要不要登记</div>
+    <b>① 公开范围由你定</b>：登记即等于公开发布。不想被联系就只留站点，不想留真名就用品牌名或化名，
+    城市只写到市级。请勿提交他人信息。<br>
+    <b>② 这里是公开仓库，不是私密表单</b>：Issue 与 PR 内容对全网可见，且会留在 Git 历史里。
+    <b>不要填写手机号、身份证、住址等敏感信息</b>；如果确实需要撤回，可提 Issue 说明，维护者会删除对应条目，
+    但请理解历史记录可能仍可被检索到。<br>
+    <b>③ 不背书、不收费</b>：本站只做信息聚合，不对任何登记主体的资质、业绩、履约能力作担保，
+    也不参与任何交易撮合与收费。请自行尽调，注意风险防范。<br>
+    <b>④ 反诈提醒</b>：凡以「OPC 官方登记」「缴纳认证费即可入册」「保证对接订单」为名收费的，均与本站无关。
+    本站登记完全免费，只在 GitHub 上进行。
+  </div>
+
+  <footer>
+    <div class="wrap" style="padding:0">
+      OPC 情报站 · 找人 · 更新 <span id="f-upd">—</span> ·
+      <a href="./">返回资讯流</a> · <a href="community.html">去找社区 →</a> ·
+      <a href="https://github.com/WXzhongwang/opc-radar/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var ALL = [], VIEW = [];
+  var elGrid = document.getElementById('grid');
+  var elQ = document.getElementById('q');
+  var elTrack = document.getElementById('sel-track');
+  var elStage = document.getElementById('sel-stage');
+  var elCnt = document.getElementById('cnt');
+  var REPO = 'WXzhongwang/opc-radar';
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function initials(name){
+    var s = String(name||'?').trim();
+    return /[\u4e00-\u9fa5]/.test(s) ? s.slice(0,1) : s.slice(0,2).toUpperCase();
+  }
+
+  function linkOf(c){
+    if (!c) return null;
+    var m = String(c).match(/https?:\/\/[^\s,，、]+/);
+    if (m) return { href: m[0], text: m[0].replace(/^https?:\/\//,'').replace(/\/$/,'') };
+    var mail = String(c).match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
+    if (mail) return { href: 'mailto:' + mail[0], text: mail[0] };
+    return null;
+  }
+
+  /* ---------- 解析 GitHub Issue 表单正文 ---------- */
+  function parseIssue(body){
+    var o = {};
+    if (!body) return o;
+    var keymap = {
+      '昵称': 'name', '昵称 / 品牌名': 'name', '品牌名': 'name', 'name': 'name',
+      'Opc简介': 'intro', 'OPC 简介': 'intro', '简介': 'intro', 'intro': 'intro',
+      '赛道': 'track', 'track': 'track',
+      '所在城市': 'city', '城市': 'city', 'city': 'city',
+      '当前阶段': 'stage', '阶段': 'stage', 'stage': 'stage',
+      '联系方式或站点': 'contact', '联系方式': 'contact', 'contact': 'contact',
+      '关键词标签': 'tags', '标签': 'tags', 'tags': 'tags'
+    };
+    var parts = String(body).split(/^###\s*/m);
+    parts.forEach(function(p){
+      var nl = p.indexOf('\n');
+      if (nl === -1) return;
+      var head = p.slice(0, nl).trim().replace(/[:：]\s*$/, '');
+      var val  = p.slice(nl + 1).trim();
+      var k = keymap[head] || keymap[head.replace(/\s+/g,'')];
+      if (k && val && val !== '_No response_') o[k] = val.replace(/\r/g,'').trim();
+    });
+    return o;
+  }
+
+  /* ---------- 拉取公开 Issue（标签 opc-profile） ---------- */
+  function fetchIssues(){
+    var url = 'https://api.github.com/repos/' + REPO +
+              '/issues?state=open&labels=opc-profile&per_page=100&sort=created&direction=desc';
+    return fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(list){
+        return (list || []).filter(function(x){ return !x.pull_request; }).map(function(x){
+          var f = parseIssue(x.body);
+          var tags = f.tags ? String(f.tags).split(/[,，、\s]+/).filter(Boolean).slice(0, 6) : [];
+          return {
+            _from: 'issue',
+            id: 'i-' + x.number,
+            name: f.name || ('OPC #' + x.number),
+            intro: f.intro || '',
+            track: f.track || '',
+            city: f.city || '',
+            stage: f.stage || '',
+            contact: f.contact || '',
+            tags: tags,
+            addedAt: (x.created_at || '').slice(0, 10),
+            issueUrl: x.html_url,
+            user: (x.user && x.user.login) || ''
+          };
+        });
+      });
+  }
+
+  /* ---------- 过滤与渲染 ---------- */
+  function applyFilter(){
+    var kw = (elQ.value || '').trim().toLowerCase();
+    var tk = elTrack.value, st = elStage.value;
+    VIEW = ALL.filter(function(it){
+      if (tk && it.track !== tk) return false;
+      if (st && it.stage !== st) return false;
+      if (kw){
+        var hay = [it.name, it.intro, it.track, it.city, it.stage, (it.tags||[]).join(' ')].join(' ').toLowerCase();
+        if (hay.indexOf(kw) === -1) return false;
+      }
+      return true;
+    });
+    elCnt.textContent = VIEW.length + ' 位';
+    render();
+  }
+
+  function render(){
+    if (!VIEW.length){
+      elGrid.innerHTML = '<div class="empty">还没有匹配的登记。<br>欢迎成为第一个——上面提个 Issue 或 PR 就行。</div>';
+      return;
+    }
+    elGrid.innerHTML = VIEW.map(function(it){
+      var lk = linkOf(it.contact);
+      return '<article class="p-card">' +
+        '<div class="p-head">' +
+          '<div class="avatar">' + esc(initials(it.name)) + '</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div class="p-name">' + esc(it.name) + '</div>' +
+            '<div class="p-sub">' + esc([it.city, it.stage].filter(Boolean).join(' · ') || '—') + '</div>' +
+          '</div>' +
+          (it._from === 'issue' ? '<span class="badge src">Issue</span>' : '<span class="badge">登记簿</span>') +
+        '</div>' +
+        (it.intro ? '<div class="p-intro">' + esc(it.intro) + '</div>' : '') +
+        (it.track ? '<div class="p-tags"><span class="tg">' + esc(it.track) + '</span>' +
+           (it.tags||[]).map(function(t){ return '<span class="tg">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+        '<div class="p-foot">' +
+          '<span style="color:var(--muted)">' + esc(it.addedAt || '') + '</span>' +
+          (lk ? '<a href="' + esc(lk.href) + '" target="_blank" rel="noopener noreferrer nofollow">联系 →</a>' : '') +
+          (it.issueUrl ? '<a href="' + esc(it.issueUrl) + '" target="_blank" rel="noopener" style="color:var(--muted);font-weight:400">讨论</a>' : '') +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function setNotice(html){
+    document.getElementById('notice').innerHTML = html ? '<div class="notice">' + html + '</div>' : '';
+  }
+
+  /* ---------- 启动 ---------- */
+  G_load();
+  function G_load(){
+    var fromFile = [], fromIssue = [];
+    var pFile = fetch('people.json?v=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : { items: [] }; })
+      .then(function(d){
+        document.getElementById('f-upd').textContent = (d.meta && d.meta.updated) || '—';
+        fromFile = (d.items || []).filter(function(x){ return x && x.consent !== false; })
+          .map(function(x){ x._from = 'file'; return x; });
+      })
+      .catch(function(){ setNotice('登记簿文件读取失败，以下仅显示来自 GitHub Issue 的登记。'); });
+
+    var pIssue = fetchIssues()
+      .then(function(list){ fromIssue = list; })
+      .catch(function(e){
+        var msg = /HTTP 403|HTTP 429/.test(e.message)
+          ? 'GitHub 接口访问频率受限（未登录状态每小时 60 次），Issue 登记暂时未加载。稍后刷新即可，people.json 中的登记不受影响。'
+          : '未能读取 GitHub Issue 登记（' + esc(e.message) + '），仅显示 people.json 中的登记。';
+        setNotice(msg);
+      });
+
+    Promise.all([pFile, pIssue]).then(function(){
+      // 去重：同名以 people.json 为准
+      var seen = {};
+      fromFile.forEach(function(x){ seen[String(x.name||'').trim()] = 1; });
+      var merged = fromFile.concat(fromIssue.filter(function(x){ return !seen[String(x.name||'').trim()]; }));
+
+      ALL = merged;
+      document.getElementById('src-meta').textContent =
+        '数据源：people.json（' + fromFile.length + '） + GitHub Issue（' + fromIssue.length + '）';
+
+      var tracks = {};
+      ALL.forEach(function(it){ if (it.track) tracks[it.track] = (tracks[it.track]||0)+1; });
+      Object.keys(tracks).sort(function(a,b){ return tracks[b]-tracks[a]; }).forEach(function(t){
+        var o = document.createElement('option');
+        o.value = t; o.textContent = t + '（' + tracks[t] + '）';
+        elTrack.appendChild(o);
+      });
+      applyFilter();
+    });
+  }
+
+  document.getElementById('copy-snippet').addEventListener('click', function(){
+    var txt = document.getElementById('snippet').textContent;
+    var btn = this;
+    var done = function(){ btn.textContent = '已复制 ✓'; setTimeout(function(){ btn.textContent = '复制 JSON 模板'; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e){ btn.textContent = '请手动复制'; }
+      document.body.removeChild(ta);
+    }
+  });
+
+  elQ.addEventListener('input', applyFilter);
+  elTrack.addEventListener('change', applyFilter);
+  elStage.addEventListener('change', applyFilter);
+})();
+</script>
+</body>
+</html>
