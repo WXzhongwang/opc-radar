@@ -37,7 +37,9 @@ jobs:
           cp communities.json _site/communities.json
           cp people.json      _site/people.json
           # 共享脚本
-          cp geo.js _site/geo.js
+          cp geo.js      _site/geo.js
+          cp chinamap.js _site/chinamap.js
+          cp map-svg.js  _site/map-svg.js
           # 仓库文档（供页面内链接与检索）
           cp CONTRIBUTING.md _site/CONTRIBUTING.md
           # 关闭 Jekyll 处理，避免下划线开头文件被忽略
