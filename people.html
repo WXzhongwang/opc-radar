@@ -331,34 +331,49 @@ footer a{color:var(--blue);text-decoration:none}
     return o;
   }
 
-  /* ---------- 拉取公开 Issue（标签 opc-profile） ---------- */
+  /* ---------- 拉取公开 Issue ----------
+     优先按 opc-profile 标签筛；标签可能因权限/时序缺失，
+     因此再按标题标记 [OPC 登记] 兜一层，保证登记不会漏。
+     --------------------------------------------------------- */
   function fetchIssues(){
-    var url = 'https://api.github.com/repos/' + REPO +
-              '/issues?state=open&labels=opc-profile&per_page=100&sort=created&direction=desc';
-    return fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } })
-      .then(function(r){
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function(list){
-        return (list || []).filter(function(x){ return !x.pull_request; }).map(function(x){
-          var f = parseIssue(x.body);
-          var tags = f.tags ? String(f.tags).split(/[,，、\s]+/).filter(Boolean).slice(0, 6) : [];
-          return {
-            _from: 'issue',
-            id: 'i-' + x.number,
-            name: f.name || ('OPC #' + x.number),
-            intro: f.intro || '',
-            track: f.track || '',
-            city: f.city || '',
-            stage: f.stage || '',
-            contact: f.contact || '',
-            tags: tags,
-            addedAt: (x.created_at || '').slice(0, 10),
-            issueUrl: x.html_url,
-            user: (x.user && x.user.login) || ''
-          };
-        });
+    var base = 'https://api.github.com/repos/' + REPO + '/issues?state=open&per_page=100'
+             + '&sort=created&direction=desc';
+    var byLabel = base + '&labels=opc-profile';
+
+    function norm(list){
+      return (list || []).filter(function(x){
+        if (x.pull_request) return false;
+        var labels = (x.labels || []).map(function(l){ return l.name; });
+        return labels.indexOf('opc-profile') > -1 ||
+               String(x.title || '').indexOf('[OPC 登记]') > -1;
+      }).map(function(x){
+        var f = parseIssue(x.body);
+        var tags = f.tags ? String(f.tags).split(/[,，、\s]+/).filter(Boolean).slice(0, 6) : [];
+        return {
+          _from: 'issue',
+          id: 'i-' + x.number,
+          name: f.name || ('OPC #' + x.number),
+          intro: f.intro || '',
+          track: f.track || '',
+          city: f.city || '',
+          stage: f.stage || '',
+          contact: f.contact || '',
+          tags: tags,
+          addedAt: (x.created_at || '').slice(0, 10),
+          issueUrl: x.html_url,
+          user: (x.user && x.user.login) || ''
+        };
+      });
+    }
+
+    return fetch(byLabel, { headers: { 'Accept': 'application/vnd.github+json' } })
+      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(norm)
+      .catch(function(){
+        /* 标签不存在或接口受限：退回全量拉取后按标题标记过滤 */
+        return fetch(base, { headers: { 'Accept': 'application/vnd.github+json' } })
+          .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+          .then(norm);
       });
   }
 
